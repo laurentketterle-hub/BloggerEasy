@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from bloggereasy.export.writer import write_theme
+from bloggereasy.export.writer import write_theme, write_preview_html
 from bloggereasy.parse.fetch import fetch_html_url, save_html
 from bloggereasy.parse.html_page import parse_html_file, parse_html_string
 from bloggereasy.theme.builder import build_blogger_xml
@@ -32,10 +32,12 @@ def _build(
     xml = build_blogger_xml(structure, template_name=template)
     validation = validate_blogger_xml(xml)
     path = write_theme(xml, out_path)
+    preview_path = write_preview_html(xml, out_path, title=structure.get("title", "BloggerEasy Preview"))
     return {
         "integration_version": "bloggereasy.sdk.v1",
         "structure": structure,
         "output": str(path),
+        "preview": str(preview_path),
         "bytes": path.stat().st_size,
         "validation": validation,
         "import_hint": "Blogger \u2192 Theme \u2192 Backup/Restore \u2192 Upload XML",
