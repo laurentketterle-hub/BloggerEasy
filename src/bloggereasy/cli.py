@@ -370,6 +370,47 @@ def preview_html_cmd(
     console.print(f"[green]Preview[/green] {path}")
 
 
+@gen_app.command("multi")
+def gen_multi(
+    input: Path = typer.Option(..., "--input", "-i", exists=True, dir_okay=False),
+    out_dir: Path | None = typer.Option(None, "--out-dir", "-o"),
+    template: str = typer.Option("simple", "--template", "-t"),
+) -> None:
+    """Generate coordinated multi-page theme set (home + about + contact)."""
+    from bloggereasy.config import OUT_DIR
+    from bloggereasy.export.writer import write_theme, write_preview_html
+    from bloggereasy.theme.builder import build_blogger_xml
+    from bloggereasy.theme.presets import apply_preset
+    from bloggereasy.parse.html_page import parse_html_file
+    from bloggereasy.theme.validate import validate_theme_file
+
+    base = out_dir or (OUT_DIR / "multi" / sanitize_filename(input.stem or "site"))
+    base.mkdir(parents=True, exist_ok=True)
+    structure = apply_preset(parse_html_file(input), template)
+
+    pages = {
+        "home": {"title": structure.get("title", "Home"), "description": structure.get("description", "Welcome")},
+        "about": {"title": "About", "description": "About this blog"},
+        "contact": {"title": "Contact", "description": "Get in touch"},
+    }
+
+    results = {}
+    for slug, overrides in pages.items():
+        page_structure = {**structure, **overrides}
+        xml = build_blogger_xml(page_structure, template_name=template)
+        xml_path = base / f"{slug}.xml"
+        write_theme(xml, xml_path)
+        html_path = write_preview_html(xml, xml_path, title=overrides["title"])
+        validation = validate_theme_file(xml_path)
+        results[slug] = {"xml": str(xml_path), "preview": str(html_path), "valid": validation["valid"]}
+
+    console.print(f"[green]Multi-page set[/green] → {base}")
+    for slug, info in results.items():
+        status = "✅" if info["valid"] else "❌"
+        console.print(f"  {status} {slug}: {info['xml']}")
+    console.print_json(data={"pages": results})
+
+
 @app.command("product")
 def product_cmd(
     source_ref: str = typer.Argument(
