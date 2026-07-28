@@ -1,2 +1,22 @@
 /* BloggerEasy default theme */
 *{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui,sans-serif;line-height:1.6;max-width:800px;margin:0 auto;padding:20px;color:#333}nav{display:flex;gap:20px;padding:10px 0;border-bottom:2px solid #eee;margin-bottom:20px}nav a{text-decoration:none;color:#06c;font-weight:600}header h1{font-size:2em;margin:20px 0 10px}header p{color:#666}main section{margin:20px 0;padding:15px;background:#f9f9f9;border-radius:8px}article{border-bottom:1px solid #eee;padding:10px 0}footer{margin-top:40px;padding-top:10px;border-top:1px solid #eee;text-align:center;color:#999;font-size:.9em}form{display:flex;flex-direction:column;gap:10px}input,textarea,button{padding:10px;border:1px solid #ddd;border-radius:4px}button{background:#06c;color:#fff;border:none;cursor:pointer}button:hover{background:#05a}
+@media (prefers-color-scheme: dark) {
+    body { background: #1a1a2e; color: #e0e0e0; }
+    nav { border-color: #333; }
+    nav a { color: #6cb4ee; }
+    main section { background: #16213e; }
+    footer { color: #666; }
+    input, textarea { background: #1a1a2e; color: #e0e0e0; border-color: #333; }
+    button { background: #e94560; }
+    button:hover { background: #c73e54; }
+}
+
+@media (max-width: 600px) {
+    body { padding: 10px; }
+    nav { flex-direction: column; gap: 5px; }
+    header h1 { font-size: 1.5em; }
+}
+
+*:focus { outline: 2px solid #06c; outline-offset: 2px; }
+.skip-link { position: absolute; top: -40px; left: 0; background: #06c; color: #fff; padding: 8px; }
+.skip-link:focus { top: 0; }
