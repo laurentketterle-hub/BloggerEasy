@@ -23,3 +23,4 @@ jobs:
           python-version: "3.11"
       - run: pip install ruff
       - run: ruff check --select=E,F,W --ignore=E501 . 2>/dev/null || echo "Lint skipped"
+# CI trigger Tue Jul 28 19:26:11 UTC 2026
