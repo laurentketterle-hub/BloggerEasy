@@ -21,6 +21,9 @@ def validate_theme_dir(directory: Path, *, strict: bool = False) -> dict:
                 "file": path.name,
                 "ok": ok,
                 "issues": result.get("issues") or result.get("errors") or [],
+                "warnings": result.get("warnings") or [],
+                "bytes": result.get("bytes", 0),
+                "summary": result.get("summary", {}),
             }
         )
     return {

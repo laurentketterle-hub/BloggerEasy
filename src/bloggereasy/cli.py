@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import typer
@@ -17,8 +18,20 @@ from bloggereasy.integrations.sdk import (
 from bloggereasy.parse.fetch import fetch_html_url
 from bloggereasy.parse.html_page import parse_html_file
 from bloggereasy.theme.builder import build_blogger_xml, sanitize_filename
-from bloggereasy.theme.presets import PRESETS
-from bloggereasy.theme.validate import validate_theme_file
+from bloggereasy.theme.presets import (
+    PRESETS,
+    PRESET_TAGS,
+    registry,
+    tokens_diff,
+    tokens_for_preset,
+    tokens_to_css,
+    tokens_to_json,
+)
+from bloggereasy.theme.validate import (
+    format_validation_text,
+    format_validation_markdown,
+    validate_theme_file,
+)
 
 app = typer.Typer(
     help="BloggerEasy — generate usable Blogger XML themes from HTML, URL, or images.",
@@ -143,16 +156,107 @@ def demo_cmd(
 
 
 @templates_app.command("list")
-def templates_list() -> None:
-    table = Table(title="Templates")
+def templates_list(
+    tag: str | None = typer.Option(
+        None,
+        "--tag",
+        "-t",
+        help="Filter templates by tag/category (e.g. light, dark, blog, portfolio, creative).",
+    ),
+    layout: str | None = typer.Option(
+        None,
+        "--layout",
+        "-l",
+        help="Filter by layout: single-column, two-column, three-column, auto.",
+    ),
+    dark: bool | None = typer.Option(
+        None,
+        "--dark/--light",
+        help="Filter by dark/light mode.",
+    ),
+    audience: str | None = typer.Option(
+        None,
+        "--audience",
+        "-a",
+        help="Filter by target audience (e.g. developers, publishers, creatives).",
+    ),
+    search: str | None = typer.Option(
+        None,
+        "--search",
+        "-s",
+        help="Fuzzy search across preset names, tags, and notes.",
+    ),
+) -> None:
+    """List built-in templates with optional tag, layout, dark, audience, and search filters."""
+    names = registry.list_names()
+
+    # Apply search first (returns scored results)
+    if search:
+        scored = registry.search(search)
+        if not scored:
+            console.print(f"[yellow]No templates match '{search}'[/yellow]")
+            return
+        names = [name for name, _ in scored]
+        suffix = f" (search: {search})"
+    elif tag or layout or dark is not None or audience:
+        names = registry.filter_by_tags(
+            include=[tag] if tag else None,
+            mode="any",
+        )
+        if layout:
+            names = [n for n in names if n in registry.filter_by_layout(layout)]
+        if dark is not None:
+            names = [n for n in names if n in registry.filter_by_dark(dark)]
+        if audience:
+            names = [n for n in names if n in registry.filter_by_audience(audience)]
+        parts = []
+        if tag:
+            parts.append(f"tag: {tag}")
+        if layout:
+            parts.append(f"layout: {layout}")
+        if dark is not None:
+            parts.append(f"mode: {'dark' if dark else 'light'}")
+        if audience:
+            parts.append(f"audience: {audience}")
+        suffix = f" ({', '.join(parts)})"
+    else:
+        suffix = ""
+
+    table = Table(title=f"Templates ({len(names)}){suffix}")
     table.add_column("Name")
+    table.add_column("Layout")
+    table.add_column("Mode")
+    table.add_column("Tags")
+    table.add_column("Audience")
     table.add_column("Notes")
-    for name, meta in PRESETS.items():
-        table.add_row(name, str(meta))
-    if TEMPLATES_DIR.exists():
-        for path in sorted(TEMPLATES_DIR.glob("*.xml")):
-            table.add_row(path.stem, f"file:{path.name}")
+
+    for name in names:
+        meta = registry.get(name) or {}
+        tags = registry.tags_for(name)
+        layout_val = meta.get("layout_hint", "single-column")
+        mode_val = "🌙 dark" if meta.get("dark") else "☀ light"
+        audience_val = meta.get("audience", "general")
+        notes = meta.get("notes", "")[:60]
+
+        table.add_row(
+            name,
+            layout_val,
+            mode_val,
+            ", ".join(tags[:4]),
+            audience_val,
+            notes,
+        )
+
+    if not names:
+        console.print("[yellow]No templates match the given filters[/yellow]")
+        return
+
     console.print(table)
+
+    if TEMPLATES_DIR.exists():
+        custom = sorted(TEMPLATES_DIR.glob("*.xml"))
+        if custom:
+            console.print(f"\n[dim]Custom templates ({len(custom)}): {', '.join(p.stem for p in custom)}[/dim]")
 
 
 @gen_app.callback(invoke_without_command=True)
@@ -505,6 +609,162 @@ def serve_cmd(
         raise typer.Exit(1) from exc
     console.print(f"Serving http://{host}:{port}/health")
     uvicorn.run("bloggereasy.api.app:app", host=host, port=port, log_level="info")
+
+
+@app.command("search")
+def search_cmd(
+    query: str = typer.Argument(..., help="Search query for templates."),
+    limit: int = typer.Option(10, "--limit", "-n", help="Max results."),
+) -> None:
+    """Fuzzy search templates by name, tag, notes, or audience."""
+    results = registry.search(query, limit=limit)
+    if not results:
+        console.print(f"[yellow]No templates match '{query}'[/yellow]")
+        return
+    table = Table(title=f"Search: '{query}' ({len(results)} results)")
+    table.add_column("Name")
+    table.add_column("Score", justify="right")
+    table.add_column("Tags")
+    table.add_column("Notes")
+    for name, score in results:
+        tags = ", ".join(registry.tags_for(name)[:3])
+        notes = (registry.get(name) or {}).get("notes", "")[:60]
+        score_str = f"{score:.2f}"
+        score_style = (
+            f"[green]{score_str}[/green]"
+            if score > 0.7
+            else f"[yellow]{score_str}[/yellow]"
+            if score > 0.4
+            else score_str
+        )
+        table.add_row(name, score_style, tags, notes)
+    console.print(table)
+
+
+@templates_app.command("tags")
+def templates_tags() -> None:
+    """List all available tags and tag groups."""
+    summary = registry.summary()
+    console.print(f"[bold]Tags ({summary['tag_count']}):[/bold] {', '.join(summary['all_tags'])}")
+    console.print()
+    for group, tags in summary["tag_groups"].items():
+        console.print(f"[bold]{group}:[/bold] {', '.join(tags)}")
+
+
+@templates_app.command("summary")
+def templates_summary() -> None:
+    """Print a JSON summary of all presets with counts and tag groups."""
+    console.print_json(data=registry.summary())
+
+
+@app.command("tokens")
+def tokens_cmd(
+    template: str = typer.Option(
+        "simple", "--template", "-t", help="Template preset to extract tokens from."
+    ),
+    out: Path | None = typer.Option(None, "--out", "-o", help="Write JSON file instead of printing."),
+    fmt: str = typer.Option(
+        "json",
+        "--format",
+        "-f",
+        help="Output format: json (structured dict), css (:root block), flat (flat token list).",
+    ),
+) -> None:
+    """Export design tokens (CSS custom properties) from a template preset."""
+    if template not in PRESETS:
+        console.print(
+            f"[red]Unknown template '{template}'. Run `bloggereasy templates list`.[/red]"
+        )
+        raise typer.Exit(1)
+
+    if fmt == "css":
+        output = tokens_to_css(template)
+    elif fmt == "flat":
+        data = tokens_for_preset(template)
+        output = json.dumps(data["tokens"], indent=2)
+    else:
+        output = tokens_to_json(template)
+
+    if out is not None:
+        out.write_text(output, encoding="utf-8")
+        console.print(f"[green]Tokens written[/green] → {out}")
+        if fmt == "css":
+            console.print("[dim]Paste the :root block into a stylesheet or Custom CSS field.[/dim]")
+    else:
+        if fmt == "css":
+            console.print(output)
+        else:
+            console.print_json(data=json.loads(output) if fmt == "json" else json.loads(output))
+
+
+@app.command("tokens-diff")
+def tokens_diff_cmd(
+    left: str = typer.Option(..., "--left", "-a", help="First template name."),
+    right: str = typer.Option(..., "--right", "-b", help="Second template name."),
+    out: Path | None = typer.Option(None, "--out", "-o", help="Write JSON diff to file."),
+) -> None:
+    """Show design token differences between two template presets."""
+    for name in (left, right):
+        if name not in PRESETS:
+            console.print(
+                f"[red]Unknown template '{name}'. Run `bloggereasy templates list`.[/red]"
+            )
+            raise typer.Exit(1)
+
+    diff = tokens_diff(left, right)
+    output = json.dumps(diff, indent=2)
+
+    if out is not None:
+        out.write_text(output, encoding="utf-8")
+        console.print(f"[green]Diff written[/green] → {out}")
+    else:
+        summary = diff["summary"]
+        console.print(f"[bold]Token diff: {left} → {right}[/bold]")
+        console.print(
+            f"Total: {summary['total']} | "
+            f"[green]+{summary['added']} added[/green] | "
+            f"[red]-{summary['removed']} removed[/red] | "
+            f"[yellow]~{summary['changed']} changed[/yellow] | "
+            f"{summary['unchanged']} unchanged"
+        )
+        if diff["changed"]:
+            console.print("\n[bold]Changed tokens:[/bold]")
+            for key, change in sorted(diff["changed"].items()):
+                console.print(f"  {key}: {change['from']} → {change['to']}")
+        if diff["added"]:
+            console.print(f"\n[bold]Added ({len(diff['added'])}):[/bold]")
+            for key in sorted(diff["added"]):
+                console.print(f"  + {key}: {diff['added'][key]}")
+        if diff["removed"]:
+            console.print(f"\n[bold]Removed ({len(diff['removed'])}):[/bold]")
+            for key in sorted(diff["removed"]):
+                console.print(f"  - {key}: {diff['removed'][key]}")
+
+
+@templates_app.command("info")
+def templates_info(
+    name: str = typer.Argument(..., help="Template preset name."),
+) -> None:
+    """Show detailed metadata and tokens for a single template preset."""
+    if name not in PRESETS:
+        console.print(f"[red]Unknown template '{name}'.[/red]")
+        raise typer.Exit(1)
+
+    meta = registry.get(name) or {}
+    tags = registry.tags_for(name)
+    data = tokens_for_preset(name)
+
+    console.print(f"\n[bold]Template: {name}[/bold]")
+    console.print(f"  Layout:   {meta.get('layout_hint', 'single-column')}")
+    console.print(f"  Mode:     {'dark' if meta.get('dark') else 'light'}")
+    console.print(f"  Dense:    {meta.get('dense', False)}")
+    console.print(f"  Audience: {meta.get('audience', 'general')}")
+    console.print(f"  Tags:     {', '.join(tags)}")
+    console.print(f"  Notes:    {meta.get('notes', '')}")
+    console.print(f"  Features: {json.dumps(data['features'])}")
+    console.print(f"\n[bold]Design Tokens ({len(data['tokens'])}):[/bold]")
+    for key, value in sorted(data["tokens"].items()):
+        console.print(f"  {key}: {value}")
 
 
 if __name__ == "__main__":

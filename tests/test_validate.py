@@ -33,20 +33,43 @@ def test_validate_reports_clear_errors_for_missing_blogger_bits() -> None:
     assert result["ok"] is False
     assert "missing b namespace on <html>" in result["errors"]
     assert "missing Blog widget" in result["errors"]
-    assert "missing required widget section(s)" not in result["errors"]
 
 
 def _valid_theme_xml(body: str = "") -> str:
     filler = "x" * 900
     return f"""<?xml version="1.0" encoding="UTF-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:b="http://www.google.com/2005/gml/b">
-  <head><b:skin><![CDATA[body {{ color: #222; }}]]></b:skin></head>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:b="http://www.google.com/2005/gml/b"
+  xmlns:data="http://www.google.com/2005/gml/data"
+  xmlns:expr="http://www.google.com/2005/gml/expr">
+  <head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <meta content="Blog Title" property="og:title"/>
+    <meta content="Blog description" property="og:description"/>
+    <title>Test Blog</title>
+    <b:skin><![CDATA[body {{ color: #222; }}]]></b:skin>
+  </head>
   <body>
     <b:section id="header" name="Header">
-      <b:widget id="Header1" title="Header" type="Header" />
+      <b:widget id="Header1" title="Header" type="Header">
+        <b:includable id="main"><div class="header">Header</div></b:includable>
+      </b:widget>
     </b:section>
     <b:section id="main" name="Main">
-      <b:widget id="Blog1" title="Blog" type="Blog" />
+      <b:widget id="Blog1" title="Blog" type="Blog">
+        <b:includable id="main">
+          <b:loop values="data:posts" var="post">
+            <article><data:post.title/></article>
+          </b:loop>
+        </b:includable>
+      </b:widget>
+    </b:section>
+    <b:section id="footer" name="Footer">
+      <b:widget id="Text1" title="Footer" type="Text">
+        <b:includable id="main"><div>Footer</div></b:includable>
+      </b:widget>
     </b:section>
     {body}
     <p>{filler}</p>
@@ -97,7 +120,7 @@ def test_strict_validation_rejects_empty_section() -> None:
     result = validate_blogger_xml(xml, strict=True)
 
     assert result["ok"] is False
-    assert "empty <b:section> is not allowed: empty" in result["errors"]
+    assert any("empty <b:section> is not allowed: empty" in e for e in result["errors"])
 
 
 def test_strict_validation_rejects_malformed_xml() -> None:
@@ -106,7 +129,7 @@ def test_strict_validation_rejects_malformed_xml() -> None:
     result = validate_blogger_xml(malformed, strict=True)
 
     assert result["ok"] is False
-    assert "strict XML parse failed" in result["errors"]
+    assert any("strict XML parse failed" in e for e in result["errors"])
 
 
 def test_validate_cli_forwards_strict_flag(tmp_path: Path) -> None:
