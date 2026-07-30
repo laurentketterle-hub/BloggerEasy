@@ -62,6 +62,12 @@ PRESETS: dict[str, dict] = {
         "dense": False,
         "accent": "#0055aa",
     },
+    "travel_journal": {
+        "layout_hint": "single-column",
+        "dark": False,
+        "dense": False,
+        "accent": "#0ea5e9",
+    },
 }
 
 
