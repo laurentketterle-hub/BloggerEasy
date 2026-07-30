@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blogger-theme name="dark_dev" version="1.0">
+  <meta>
+    <description>Dark developer blog theme with terminal-inspired styling, monospace accents, and syntax-highlighted code blocks.</description>
+    <author>BloggerEasy</author>
+    <tags>dark,developer,monospace,terminal,code</tags>
+  </meta>
+  <fixture>data/samples/html/dark_dev.html</fixture>
+  <validation>
+    <css-contains>.hero</css-contains>
+    <css-contains>--bg</css-contains>
+    <css-contains>--font-mono</css-contains>
+    <css-contains>pre code</css-contains>
+    <css-contains>.terminal-block</css-contains>
+    <css-contains>.callout</css-contains>
+  </validation>
+  <tokens>
+    <color name="bg">#0d1117</color>
+    <color name="surface">#161b22</color>
+    <color name="border">#30363d</color>
+    <color name="text">#e6edf3</color>
+    <color name="accent">#58a6ff</color>
+    <color name="green">#3fb950</color>
+  </tokens>
+</blogger-theme>

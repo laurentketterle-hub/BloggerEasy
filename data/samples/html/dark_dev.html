@@ -1,25 +1,275 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Dev Notes</title>
-  <meta name="description" content="Dark developer blog" />
+  <meta charset="utf-8" />
+  <title>Dark Dev — Terminal-Inspired Developer Blog</title>
+  <meta name="description" content="Dark developer blog theme sample for BloggerEasy" />
   <style>
-    body { font-family: ui-monospace, Consolas, monospace; background: #0b1220; color: #e2e8f0; }
-    header { background: #1e293b; padding: 1.5rem; border-bottom: 2px solid #38bdf8; }
-    a { color: #38bdf8; }
-    .sidebar { background: #111827; padding: 1rem; }
-    nav a { margin-right: 1rem; color: #7dd3fc; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --green: #3fb950;
+      --orange: #d2991d;
+      --red: #f85149;
+      --purple: #a371f7;
+      --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+    /* Terminal-styled hero */
+    .hero {
+      background: linear-gradient(180deg, #0d1117 0%, #161b22 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 3rem 1.5rem 2rem;
+    }
+    .hero-inner { max-width: 780px; margin: 0 auto; }
+    .hero .prompt { color: var(--green); font-family: var(--font-mono); font-size: 0.85rem; margin-bottom: 0.5rem; }
+    .hero .prompt::before { content: '$ '; color: var(--accent); }
+    .hero h1 { font-size: clamp(1.6rem, 3.5vw, 2.4rem); font-weight: 700; color: #f0f6fc; margin-bottom: 0.3rem; }
+    .hero .tagline { color: var(--muted); font-family: var(--font-mono); font-size: 0.9rem; }
+    .hero .tagline::before { content: '// '; color: var(--muted); }
+
+    /* Article layout */
+    article { max-width: 780px; margin: 0 auto; padding: 2.5rem 1.5rem 3.5rem; }
+    article h2 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin: 2rem 0 0.75rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+    article h2::before { content: '## '; color: var(--muted); font-family: var(--font-mono); font-size: 1rem; }
+    article h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--orange); }
+    article p { margin-bottom: 1rem; color: #c9d1d9; }
+    article a { color: var(--accent); text-decoration: none; border-bottom: 1px dashed var(--accent); }
+    article a:hover { color: var(--green); border-bottom-style: solid; }
+    article strong { color: var(--purple); }
+
+    /* Code blocks */
+    pre {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.5;
+      margin: 1rem 0;
+      color: #e6edf3;
+    }
+    pre .keyword { color: var(--red); }
+    pre .string { color: var(--green); }
+    pre .comment { color: var(--muted); font-style: italic; }
+    pre .function { color: var(--purple); }
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.9em;
+      background: var(--surface);
+      padding: 0.15em 0.4em;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+    }
+    pre code { background: none; border: none; padding: 0; font-size: inherit; }
+
+    /* Inline terminal */
+    .terminal-block {
+      background: #0d1117;
+      border: 1px solid var(--green);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      margin: 1rem 0;
+      color: var(--green);
+    }
+    .terminal-block .cmd::before { content: '➜ '; color: var(--accent); }
+    .terminal-block .output { color: var(--text); }
+
+    /* Callout box */
+    .callout {
+      background: rgba(88,166,255,0.08);
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      margin: 1rem 0;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.9rem;
+    }
+    .callout.warning { background: rgba(210,153,29,0.08); border-left-color: var(--orange); }
+    .callout.success { background: rgba(63,185,80,0.08); border-left-color: var(--green); }
+
+    /* Tags */
+    .tags { margin: 1.5rem 0; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .tag {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 0.2em 0.75em;
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      color: var(--muted);
+    }
+
+    /* Meta bar */
+    .meta {
+      display: flex; gap: 1.5rem; flex-wrap: wrap;
+      font-size: 0.85rem; color: var(--muted);
+      font-family: var(--font-mono);
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .meta span::before { opacity: 0.5; margin-right: 0.3em; }
+    .meta .date::before { content: '📅'; }
+    .meta .read::before { content: '⏱'; }
+    .meta .author::before { content: '✍'; }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+    }
+    footer .heart { color: var(--red); }
   </style>
 </head>
 <body>
-  <header><h1>Dev Notes</h1></header>
-  <nav class="menu"><a href="/">Home</a><a href="/posts">Posts</a><a href="/about">About</a></nav>
-  <div style="display:flex;gap:1rem">
-    <main>
-      <article><h2>Ship small PRs</h2><p>Keep changes reviewable and tested.</p></article>
-    </main>
-    <aside class="sidebar"><h3>Tags</h3><p>python, go, ci</p></aside>
-  </div>
-  <footer><p>Built for night owls</p></footer>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="prompt">blogger init --theme dark_dev</div>
+      <h1>Building Resilient CLI Tools in Rust</h1>
+      <p class="tagline">Lessons from rewriting our deployment pipeline in 300 lines</p>
+    </div>
+  </header>
+
+  <article>
+    <div class="meta">
+      <span class="date">2026-07-28</span>
+      <span class="read">8 min read</span>
+      <span class="author">laurentketterle</span>
+    </div>
+
+    <div class="tags">
+      <span class="tag">rust</span><span class="tag">cli</span><span class="tag">devops</span><span class="tag">systems</span>
+    </div>
+
+    <p>Six months ago our deployment pipeline was a <strong>2,400-line Bash monster</strong> that nobody wanted to touch. Today it compiles to a 4 MiB static binary and deploys in under three seconds. Here is the full story — the design choices, the mistakes, and the patterns that stuck.</p>
+
+    <h2>The starting point: why Bash broke</h2>
+    <p>Our pipeline handled 14 services across 3 environments. The Bash script had accumulated:</p>
+    <ul style="color:#c9d1d9; margin:0.5rem 0 1rem 1.5rem; line-height:1.8;">
+      <li>Implicit state via exported variables</li>
+      <li>No error handling — <code>set -e</code> was bolted on after the fact</li>
+      <li>Stringly-typed config that relied on <code>grep | awk | sed</code> chains</li>
+      <li>Zero testability — every change was a production coin-flip</li>
+    </ul>
+
+    <div class="callout warning">
+      <strong>⚠️ The key insight:</strong> Bash is an excellent glue language for 20-line scripts but becomes exponentially dangerous past 200 lines. Static types and algebraic error handling are not luxuries — they are survival tools.
+    </div>
+
+    <h2>Why Rust over Go or Python</h2>
+    <p>We considered three options seriously:</p>
+    <ul style="color:#c9d1d9; margin:0.5rem 0 1rem 1.5rem; line-height:1.8;">
+      <li><strong>Python</strong> — too slow to start, dependency hell on air-gapped prod hosts</li>
+      <li><strong>Go</strong> — strong contender, but error-handling verbosity was a dealbreaker</li>
+      <li><strong>Rust</strong> — single binary, <code>clap</code> for args, <code>anyhow</code>/<code>thiserror</code> for errors, <code>serde</code> for config</li>
+    </ul>
+    <p>The clincher: <strong>clap's derive macro</strong> meant our entire CLI surface was defined in a single struct. No manual arg parsing, no stringly-typed flags.</p>
+
+    <pre><code><span class="comment">// The entire CLI definition in one struct</span>
+<span class="keyword">use</span> clap::{Parser, Subcommand};
+
+<span class="keyword">#[derive</span>(Parser)<span class="keyword">]</span>
+<span class="keyword">#[command</span>(name = <span class="string">"deployctl"</span>, version)<span class="keyword">]</span>
+<span class="keyword">struct</span> Cli {
+    <span class="keyword">#[arg</span>(short, long, env = <span class="string">"DEPLOY_ENV"</span>)<span class="keyword">]</span>
+    <span class="function">env</span>: Environment,
+
+    <span class="keyword">#[command</span>(subcommand)<span class="keyword">]</span>
+    <span class="function">command</span>: Command,
+}
+
+<span class="keyword">#[derive</span>(Subcommand)<span class="keyword">]</span>
+<span class="keyword">enum</span> Command {
+    <span class="function">Deploy</span> { service: String, tag: String },
+    <span class="function">Rollback</span> { service: String },
+    <span class="function">Status</span> { <span class="keyword">#[arg</span>(long)<span class="keyword">]</span> <span class="function">watch</span>: bool },
+}</code></pre>
+
+    <h2>Error handling: the <code>anyhow</code> + <code>thiserror</code> pattern</h2>
+    <p>We used <code>thiserror</code> for library-level error types and <code>anyhow</code> at the application boundary. This gave us structured errors internally with human-readable context at the top level.</p>
+
+    <pre><code><span class="keyword">#[derive</span>(Error, Debug)<span class="keyword">]</span>
+<span class="keyword">pub enum</span> DeployError {
+    <span class="keyword">#[error</span>(<span class="string">"cannot reach {host}:{port}"</span>)<span class="keyword">]</span>
+    <span class="function">SshConnection</span> { host: String, port: u16 },
+
+    <span class="keyword">#[error</span>(<span class="string">"health check failed after {attempts} attempts"</span>)<span class="keyword">]</span>
+    <span class="function">HealthCheck</span> { service: String, attempts: u32 },
+
+    <span class="keyword">#[error</span>(transparent)<span class="keyword">]</span>
+    <span class="function">Io</span>(<span class="keyword">#[from]</span> std::io::Error),
+}</code></pre>
+
+    <div class="callout success">
+      <strong>✅ Result:</strong> Every deployment failure now produces a structured error that our monitoring stack can alert on — no more grepping through Bash output.
+    </div>
+
+    <h2>Config: TOML with serde</h2>
+    <p>Gone are the days of <code>source .env.production</code> and hoping the right variables are set. Our config is now a single TOML file validated at startup:</p>
+
+    <div class="terminal-block">
+      <div class="cmd">deployctl deploy --service api-gateway --tag v2.4.1</div>
+      <div class="output">▸ Reading deploy.toml... OK
+▸ Validating 14 service definitions... OK
+▸ Connecting to bastion (prod)... OK
+▸ api-gateway v2.4.1 → 3 hosts (canary → stable)... DONE in 2.8s</div>
+    </div>
+
+    <h2>Testing: unit + integration + golden files</h2>
+    <p>We structured tests in three layers:</p>
+    <ol style="color:#c9d1d9; margin:0.5rem 0 1rem 1.5rem; line-height:1.8;">
+      <li><strong>Unit tests</strong> — pure functions, fast, parallel</li>
+      <li><strong>Integration tests</strong> — SSH against Docker containers, real but isolated</li>
+      <li><strong>Golden-file tests</strong> — snapshot CLI output, catch regressions instantly</li>
+    </ol>
+
+    <p>The golden-file approach was particularly effective. Any change to CLI output format triggers a test failure that forces the author to consciously update the snapshot.</p>
+
+    <h2>What we learned</h2>
+    <ol style="color:#c9d1d9; margin:0.5rem 0 1rem 1.5rem; line-height:1.8;">
+      <li><strong>Static types eliminate entire classes of bugs</strong> — environment strings, port numbers, service names all became enums</li>
+      <li><strong>Single binary distribution is liberating</strong> — no Python, no Node, no runtime to manage on prod hosts</li>
+      <li><strong>Good CLI frameworks change the design</strong> — <code>clap</code> made it so easy to add subcommands that we naturally split the monolith into composable pieces</li>
+      <li><strong>Errors should be values, not strings</strong> — structured errors + <code>anyhow</code> context = debuggable production failures</li>
+    </ol>
+
+    <div class="callout">
+      <strong>💡 Pro tip:</strong> Start with <code>anyhow::Result&lt;T&gt;</code> everywhere. Graduate to <code>thiserror</code> when you need to match on error variants. Don't over-engineer the error types too early.
+    </div>
+
+    <h2>Next steps</h2>
+    <p>We are exploring <code>tower</code>-style middleware for the deploy pipeline (timeouts, retries, circuit breakers) and a TUI dashboard using <code>ratatui</code>. The static binary approach makes all of this feasible without adding runtime dependencies.</p>
+  </article>
+
+  <footer>
+    Built with <span class="heart">❤</span> · BloggerEasy <code>dark_dev</code> theme · Demo HTML fixture
+  </footer>
 </body>
 </html>
