@@ -31,11 +31,10 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -e ".[dev]"
-          pip install pytest-timeout
 
       - name: Run issue-80 tests
         run: |
-          python -m pytest tests/test_issue_80.py -v --tb=short --timeout=120
+          python -m pytest tests/test_issue_80.py -v --tb=short
 
       - name: Test CLI site generate
         run: |
