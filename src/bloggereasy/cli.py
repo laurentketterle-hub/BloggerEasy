@@ -471,10 +471,6 @@ def serve_cmd(
     uvicorn.run("bloggereasy.api.app:app", host=host, port=port, log_level="info")
 
 
-if __name__ == "__main__":
-    app()
-
-
 # ---------------------------------------------------------------------------
 # Site (multi-page) commands — issue #80
 # ---------------------------------------------------------------------------
@@ -628,3 +624,7 @@ def site_validate_cmd(
     console.print(f"{ok_count}/{len(xml_files)} pages valid")
     if ok_count < len(xml_files):
         raise typer.Exit(1)
+
+
+if __name__ == "__main__":
+    app()
