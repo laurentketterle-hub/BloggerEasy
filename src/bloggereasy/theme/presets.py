@@ -62,6 +62,12 @@ PRESETS: dict[str, dict] = {
         "dense": False,
         "accent": "#0055aa",
     },
+    "dark_dev": {
+        "layout_hint": "two-column",
+        "dark": True,
+        "dense": False,
+        "accent": "#38bdf8",
+    },
 }
 
 
