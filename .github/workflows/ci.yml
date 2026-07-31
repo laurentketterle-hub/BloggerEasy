@@ -1,5 +1,11 @@
 name: CI
-on: [push, pull_request]
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -8,8 +14,50 @@ jobs:
         python-version: ["3.11", "3.12"]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - run: pip install -e ".[dev]"
-      - run: python -m pytest tests/ -v --tb=short
+
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
+
+      - name: Install test deps
+        run: pip install pytest pytest-cov
+
+      - name: Run tests with coverage
+        run: python -m pytest tests/ -v --tb=short --cov=src/bloggereasy --cov-report=term-missing
+
+      - name: Run Ruff linter
+        run: ruff check src/ tests/ || true
+
+      - name: Validate multi-page samples
+        shell: python
+        run: |
+          from bloggereasy.multi_page import generate_multi_page_site
+          from bloggereasy.config import SAMPLES_DIR
+          from pathlib import Path
+          import tempfile
+          d = Path(tempfile.mkdtemp())
+          m = generate_multi_page_site(SAMPLES_DIR / "html", d)
+          ok = m.all_valid or len(m.errors) == 0
+          print(f"OK: {len(m.pages)} pages, {m.total_bytes} bytes")
+          assert ok, f"Multi-page validation failed: {m.errors}"
+
+      - name: Verify template count
+        shell: python
+        run: |
+          from bloggereasy.theme.presets import PRESETS
+          assert len(PRESETS) >= 15, f"Only {len(PRESETS)} templates"
+          print(f"Templates: {len(PRESETS)} -- {sorted(PRESETS)}")
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ruff
+      - run: ruff check src/ tests/

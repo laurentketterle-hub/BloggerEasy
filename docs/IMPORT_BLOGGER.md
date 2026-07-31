@@ -103,6 +103,25 @@ If you encounter issues during the import process:
 ## Related Documentation
 
 - [BloggerEasy README](../README.md) - Overview of the BloggerEasy tool
+- [Multi-Page Guide](MULTI_PAGE.md) - Multi-page site generation
 - [Contributing Guide](../CONTRIBUTING.md) - How to contribute to BloggerEasy
 - [Theme Pack Guide](../THEME_PACK.md) - Information about creating and using theme packs
 - [Web UI Guide](../WEB_UI.md) - Details about the web interface
+
+## Importing a Multi-Page Site
+
+BloggerEasy supports generating full multi-page Blogger sites. Follow these steps
+to import multiple pages:
+
+1. Generate the multi-page site using `generate_multi_page_site()` or `generate_multi_page_from_strings()`
+2. Locate the output directory containing individual `.xml` files for each page
+3. For each `.xml` file representing a different page (home, about, contact, etc.):
+   - Import into Blogger as described in Step 3 above
+   - Each XML file functions as a standalone theme
+4. Use Blogger's Pages feature (Pages → New Page) for static content pages
+5. Use the main XML theme as your blog's active theme
+
+**Note**: Blogger themes apply to the entire blog, not individual pages.
+For truly separate page layouts, generate separate XML themes and switch
+between them, or use Blogger's built-in page management for static content
+while using one primary theme for the blog.

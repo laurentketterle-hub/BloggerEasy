@@ -25,6 +25,7 @@ Image ─┘
 - [Desktop GUI (Qt)](#desktop-gui-qt)
 - [Screenshots](#screenshots)
 - [Quick start](#quick-start)
+- [Multi-Page Site Generation](#multi-page-site-generation)
 - [CLI reference](#cli-reference)
 - [Templates & samples](#templates--samples)
 - [Import into Blogger](#import-into-blogger)
@@ -43,7 +44,7 @@ Image ─┘
 | **URL → theme** | Fetch a public page → structure → validated Blogger XML |
 | **Image → theme** | Sample palette from a mockup/screenshot → theme skin |
 | **HTML file** | Offline local HTML samples or your own page |
-| **Templates** | `simple`, `portfolio`, `news`, `dark`, `magazine`, `docs`, `from-image` |
+| **Templates** | `simple`, `portfolio`, `news`, `dark`, `magazine`, `docs`, `from-image`, `home`, `about`, `contact` |
 | **Desktop GUI** | Modern **PySide6** app (`bloggereasy-gui`) |
 | **Validate** | Check theme XML before upload |
 | **Offline demo** | `bloggereasy demo` batch-generates all bundled samples |
@@ -186,6 +187,9 @@ Luôn sao lưu theme hiện tại trước khi upload.
 | `landing` | Single-column hero, CTA, and feature cards |
 | `dark` | Dark developer look |
 | `from-image` | Image palette (auto for image mode) |
+| `home` | Single-column home / landing page |
+| `about` | Two-column about / team page |
+| `contact` | Dense two-column contact / form page |
 
 Bundled HTML samples: `data/samples/html/` (`portfolio`, `news_portal`, `dark_dev`, `magazine`, …).
 
@@ -193,7 +197,22 @@ Respect site Terms of Service when fetching live URLs.
 
 ---
 
-## Import into Blogger
+## Multi-Page Site Generation
+
+BloggerEasy can generate **complete multi-page Blogger sites** from a directory of HTML files. Each HTML file is automatically mapped to a matching template preset (home, about, contact, portfolio, etc.), converted to a validated Blogger XML theme, and collected into a site manifest with cross-page navigation links.
+
+- **Auto-detection**: `home.html` → `home` template, `about.html` → `about` template, `contact.html` → `contact` template
+- **Programmatic API**: `generate_multi_page_site()` and `generate_multi_page_from_strings()`
+- **Manifest output**: `site_manifest.json` with per-page validation results and aggregate statistics
+
+```powershell
+python -c "from bloggereasy.multi_page import generate_multi_page_site; from bloggereasy.config import SAMPLES_DIR; m = generate_multi_page_site(SAMPLES_DIR/'html'); print(f'{len(m.pages)} pages, all valid: {m.all_valid}')"
+```
+
+See [Multi-Page Guide](docs/MULTI_PAGE.md) for full API documentation and usage examples.
+
+---
+
 ## Import into Blogger
 For detailed import instructions with screenshots and troubleshooting, see [Import Blogger Guide](docs/IMPORT_BLOGGER.md).
 
