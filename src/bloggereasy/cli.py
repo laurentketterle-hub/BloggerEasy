@@ -27,9 +27,11 @@ app = typer.Typer(
 gen_app = typer.Typer(help="Generate themes")
 parse_app = typer.Typer(help="Parse inputs")
 templates_app = typer.Typer(help="Built-in templates")
+site_app = typer.Typer(help="Multi-page site generator (home + about + contact)")
 app.add_typer(gen_app, name="gen")
 app.add_typer(parse_app, name="parse")
 app.add_typer(templates_app, name="templates")
+app.add_typer(site_app, name="site")
 console = Console()
 
 
@@ -471,3 +473,158 @@ def serve_cmd(
 
 if __name__ == "__main__":
     app()
+
+
+# ---------------------------------------------------------------------------
+# Site (multi-page) commands — issue #80
+# ---------------------------------------------------------------------------
+
+@site_app.command("generate")
+def site_generate_cmd(
+    out_dir: Path = typer.Option(
+        ..., "--out-dir", "-o", help="Output directory for generated site pages."
+    ),
+    site_name: str = typer.Option("My Site", "--name", "-n", help="Site name displayed in header."),
+    tagline: str = typer.Option("", "--tagline", help="Site tagline / subtitle."),
+    home_html: Path | None = typer.Option(
+        None, "--home", exists=True, dir_okay=False, help="HTML template for home page."
+    ),
+    about_html: Path | None = typer.Option(
+        None, "--about", exists=True, dir_okay=False, help="HTML template for about page."
+    ),
+    contact_html: Path | None = typer.Option(
+        None, "--contact", exists=True, dir_okay=False, help="HTML template for contact page."
+    ),
+    bundle: bool = typer.Option(False, "--bundle", help="Also generate GUIDE.md in output."),
+) -> None:
+    """Generate a multi-page Blogger site (home + about + contact).
+
+    Each page is a self-contained, importable Blogger XML theme with shared
+    header, navigation, and footer.
+
+    Examples:
+
+        bloggereasy site generate -o ./my_site -n "My Blog"
+        bloggereasy site generate -o ./site --home home.html --about about.html --contact contact.html
+    """
+    from bloggereasy.feature_issue_80 import (
+        MultiPageSiteConfig,
+        generate_from_html_templates,
+        generate_multi_page_site,
+    )
+
+    if home_html or about_html or contact_html:
+        home_str = home_html.read_text(encoding="utf-8") if home_html else None
+        about_str = about_html.read_text(encoding="utf-8") if about_html else None
+        contact_str = contact_html.read_text(encoding="utf-8") if contact_html else None
+        manifest = generate_from_html_templates(
+            home_html=home_str,
+            about_html=about_str,
+            contact_html=contact_str,
+            output_dir=out_dir,
+            site_name=site_name,
+            tagline=tagline,
+        )
+        if bundle:
+            from bloggereasy.feature_issue_80 import MultiPageGenerator
+
+            cfg = MultiPageSiteConfig(
+                site_name=site_name,
+                tagline=tagline,
+                pages=MultiPageGenerator._default_pages(),
+            )
+            gen = MultiPageGenerator(cfg)
+            # regenerate with corrected config for bundle mode
+            manifest = generate_multi_page_site(
+                {"site_name": site_name, "tagline": tagline},
+                out_dir,
+                bundle=True,
+            )
+    else:
+        manifest = generate_multi_page_site(
+            {"site_name": site_name, "tagline": tagline},
+            out_dir,
+            bundle=bundle,
+        )
+
+    all_ok = manifest.get("all_valid", False)
+    count = manifest.get("page_count", 0)
+    icon = "✅" if all_ok else "⚠️"
+    console.print(f"{icon} Generated {count} page(s) in [green]{out_dir}[/green]")
+
+    table = Table(title=f"Site: {site_name}")
+    table.add_column("Page")
+    table.add_column("File")
+    table.add_column("Valid")
+    for pid, info in manifest.get("pages", {}).items():
+        table.add_row(
+            info["page_label"],
+            info["filename"],
+            "✅" if info["validation"]["ok"] else "❌",
+        )
+    console.print(table)
+    console.print(
+        f"[dim]Import each .xml: Blogger → Theme → Backup/Restore → Upload[/dim]"
+    )
+    if not all_ok:
+        raise typer.Exit(1)
+
+
+@site_app.command("defaults")
+def site_defaults_cmd(
+    out_dir: Path = typer.Option(
+        ..., "--out-dir", "-o", help="Output directory."
+    ),
+    site_name: str = typer.Option("My Multi-Page Blog", "--name", "-n"),
+) -> None:
+    """Generate a complete multi-page site using built-in defaults.
+
+    Creates home, about, and contact pages with sensible defaults — ready to import.
+    """
+    from bloggereasy.feature_issue_80 import generate_multi_page_site
+
+    manifest = generate_multi_page_site(
+        {"site_name": site_name},
+        out_dir,
+        bundle=True,
+    )
+    console.print(
+        f"✅ Generated {manifest['page_count']} page(s) with defaults → [green]{out_dir}[/green]"
+    )
+    for pid, info in manifest.get("pages", {}).items():
+        console.print(f"  {info['filename']} — {info['validation']['ok'] and '✅' or '❌'}")
+    if not manifest.get("all_valid", False):
+        raise typer.Exit(1)
+
+
+@site_app.command("validate")
+def site_validate_cmd(
+    directory: Path = typer.Option(
+        ..., "--dir", "-d", exists=True, file_okay=False,
+        help="Directory containing generated site .xml files."
+    ),
+) -> None:
+    """Validate all pages in a generated site directory."""
+    from bloggereasy.theme.validate import validate_theme_file
+
+    xml_files = sorted(directory.glob("*.xml"))
+    if not xml_files:
+        console.print(f"[red]No .xml files found in {directory}[/red]")
+        raise typer.Exit(1)
+
+    table = Table(title="Site validation")
+    table.add_column("File")
+    table.add_column("OK")
+    table.add_column("Errors")
+    ok_count = 0
+    for path in xml_files:
+        result = validate_theme_file(path)
+        ok = result.get("ok", False)
+        if ok:
+            ok_count += 1
+        errs = result.get("errors") or []
+        table.add_row(path.name, "✅" if ok else "❌", str(len(errs)))
+    console.print(table)
+    console.print(f"{ok_count}/{len(xml_files)} pages valid")
+    if ok_count < len(xml_files):
+        raise typer.Exit(1)

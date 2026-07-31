@@ -1,0 +1,66 @@
+name: Issue 80 — Multi-Page Site Generator
+
+on:
+  push:
+    branches: [feat/absorb-80, feat/issue-80]
+    paths:
+      - 'src/bloggereasy/feature_issue_80.py'
+      - 'tests/test_issue_80.py'
+      - 'src/bloggereasy/cli.py'
+  pull_request:
+    branches: [master, main]
+    paths:
+      - 'src/bloggereasy/feature_issue_80.py'
+      - 'tests/test_issue_80.py'
+
+jobs:
+  test-issue-80:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Run issue-80 tests
+        run: |
+          python -m pytest tests/test_issue_80.py -v --tb=short --timeout=120
+
+      - name: Test CLI site generate
+        run: |
+          python -m bloggereasy.cli site generate -o /tmp/test_site_cli -n "CI Test Site"
+          python -m bloggereasy.cli site validate -d /tmp/test_site_cli
+
+      - name: Test CLI site defaults
+        run: |
+          python -m bloggereasy.cli site defaults -o /tmp/test_site_defaults -n "CI Defaults"
+          python -m bloggereasy.cli site validate -d /tmp/test_site_defaults
+
+      - name: Verify output files
+        run: |
+          echo "=== Generated site files ==="
+          ls -la /tmp/test_site_cli/
+          echo "=== File sizes ==="
+          wc -c /tmp/test_site_cli/*.xml
+          echo "=== Manifest ==="
+          cat /tmp/test_site_cli/site_manifest.json | python -m json.tool
+
+      - name: Count implementation lines
+        run: |
+          echo "=== feature_issue_80.py ==="
+          wc -l src/bloggereasy/feature_issue_80.py
+          echo "=== test_issue_80.py ==="
+          wc -l tests/test_issue_80.py
+          echo "=== CLI site commands ==="
+          grep -c "site_app\|site_" src/bloggereasy/cli.py || true
