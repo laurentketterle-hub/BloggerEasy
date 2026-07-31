@@ -124,7 +124,9 @@ class TestTemplateRegistry:
     def test_filter_by_tags_include_all(self) -> None:
         names = registry.filter_by_tags(include=["light", "blog", "dense"], mode="all")
         assert "news" in names
-        assert "docs" in names
+        assert "magazine" in names
+        # docs does not have the "blog" tag, so it won't match all three
+        assert "docs" not in names
         assert "dark" not in names  # dark is not light
 
     def test_filter_by_tags_exclude(self) -> None:
