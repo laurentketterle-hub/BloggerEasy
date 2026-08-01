@@ -13,6 +13,7 @@ from bloggereasy.integrations.sdk import (
     generate_from_html_string,
     generate_from_image,
     generate_from_url,
+    generate_multi_page,
 )
 from bloggereasy.parse.fetch import fetch_html_url
 from bloggereasy.parse.html_page import parse_html_file
@@ -305,6 +306,62 @@ def gen_image(
             "validation": result["validation"],
         }
     )
+
+
+@gen_app.command("multi")
+def gen_multi(
+    home: Path = typer.Option(..., "--home", exists=True, dir_okay=False, help="HTML for home page"),
+    about: Path | None = typer.Option(None, "--about", exists=True, dir_okay=False, help="HTML for about page"),
+    contact: Path | None = typer.Option(None, "--contact", exists=True, dir_okay=False, help="HTML for contact page"),
+    out_dir: Path | None = typer.Option(None, "--out-dir", "-o", help="Output directory for multi-page bundle"),
+    template: str = typer.Option("simple", "--template", "-t"),
+    widgets: str = typer.Option(
+        "default", "--widgets", help="Sidebar widgets: default, minimal, full."
+    ),
+    dark: bool = typer.Option(False, "--dark", help="Force dark skin colors."),
+) -> None:
+    """Generate a coordinated multi-page theme set (home + optional about + contact).
+
+    Each page shares the same colors, fonts, and skin extracted from the home page.
+    Output: home.xml, about.xml, contact.xml in the target directory.
+    """
+    _validate_widgets(widgets)
+    pages: dict[str, Path] = {"home": home}
+    if about is not None:
+        pages["about"] = about
+    if contact is not None:
+        pages["contact"] = contact
+
+    target = out_dir or (OUT_DIR / "multi")
+    result = generate_multi_page(
+        pages, target, template=template, widgets=widgets, dark=dark
+    )
+
+    table = Table(title="Multi-page generation")
+    table.add_column("Page")
+    table.add_column("Title")
+    table.add_column("File")
+    table.add_column("Bytes", justify="right")
+    table.add_column("Valid")
+    for name, page_result in result["pages"].items():
+        table.add_row(
+            name,
+            page_result["structure"].get("title", "")[:40],
+            page_result["output"],
+            str(page_result["bytes"]),
+            "yes" if page_result["validation"].get("ok") else "no",
+        )
+    console.print(table)
+    console.print(f"[green]Bundle ready[/green] → {target}")
+    console.print_json(
+        data={
+            "template": result["template"],
+            "pages": list(result["pages"].keys()),
+            "all_valid": result["all_valid"],
+        }
+    )
+    if not result["all_valid"]:
+        raise typer.Exit(1)
 
 
 @gen_app.command("preview-css")
