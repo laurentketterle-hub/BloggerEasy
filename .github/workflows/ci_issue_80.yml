@@ -7,11 +7,14 @@ on:
       - 'src/bloggereasy/feature_issue_80.py'
       - 'tests/test_issue_80.py'
       - 'src/bloggereasy/cli.py'
+      - '.github/workflows/ci_issue_80.yml'
+      - 'pyproject.toml'
   pull_request:
     branches: [master, main]
     paths:
       - 'src/bloggereasy/feature_issue_80.py'
       - 'tests/test_issue_80.py'
+      - '.github/workflows/ci_issue_80.yml'
 
 jobs:
   test-issue-80:
