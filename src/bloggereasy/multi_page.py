@@ -13,11 +13,10 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from bloggereasy.config import OUT_DIR, SAMPLES_DIR
+from bloggereasy.config import OUT_DIR
 from bloggereasy.integrations.sdk import generate_from_html, generate_from_html_string
-from bloggereasy.parse.html_page import parse_html_file, parse_html_string
-from bloggereasy.theme.builder import build_blogger_xml
-from bloggereasy.theme.presets import PRESETS, apply_preset
+from bloggereasy.parse.html_page import parse_html_file
+from bloggereasy.theme.presets import PRESETS
 from bloggereasy.theme.validate import validate_blogger_xml
 
 #: Mapping from filename stem to template name.  Recognised stems get the

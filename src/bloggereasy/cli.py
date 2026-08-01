@@ -504,7 +504,6 @@ def site_generate_cmd(
         bloggereasy site generate -o ./site --home home.html --about about.html --contact contact.html
     """
     from bloggereasy.feature_issue_80 import (
-        MultiPageSiteConfig,
         generate_from_html_templates,
         generate_multi_page_site,
     )
@@ -522,14 +521,7 @@ def site_generate_cmd(
             tagline=tagline,
         )
         if bundle:
-            from bloggereasy.feature_issue_80 import MultiPageGenerator
 
-            cfg = MultiPageSiteConfig(
-                site_name=site_name,
-                tagline=tagline,
-                pages=MultiPageGenerator._default_pages(),
-            )
-            gen = MultiPageGenerator(cfg)
             # regenerate with corrected config for bundle mode
             manifest = generate_multi_page_site(
                 {"site_name": site_name, "tagline": tagline},
@@ -560,7 +552,7 @@ def site_generate_cmd(
         )
     console.print(table)
     console.print(
-        f"[dim]Import each .xml: Blogger → Theme → Backup/Restore → Upload[/dim]"
+        "[dim]Import each .xml: Blogger → Theme → Backup/Restore → Upload[/dim]"
     )
     if not all_ok:
         raise typer.Exit(1)

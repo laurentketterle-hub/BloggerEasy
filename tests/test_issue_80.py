@@ -7,8 +7,6 @@ HTML template parsing, bundle generation, and edge cases.
 from __future__ import annotations
 
 import json
-import tempfile
-from pathlib import Path
 
 import pytest
 
@@ -582,7 +580,7 @@ class TestMultiPageGenerator:
 
     def test_generate_bundle_creates_guide(self, generator, tmp_path) -> None:
         out = tmp_path / "bundle"
-        manifest = generator.generate_bundle(out)
+        generator.generate_bundle(out)
         guide = out / "GUIDE.md"
         assert guide.exists()
         content = guide.read_text(encoding="utf-8")
@@ -709,7 +707,7 @@ class TestGenerateMultiPageSite:
             pages=[PageConfig(page_id="home", page_label="Home")],
         )
         out = tmp_path / "bundle_site"
-        manifest = generate_multi_page_site(cfg, out, bundle=True)
+        generate_multi_page_site(cfg, out, bundle=True)
         assert (out / "GUIDE.md").exists()
 
     def test_all_pages_valid(self, tmp_path) -> None:

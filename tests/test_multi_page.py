@@ -13,7 +13,6 @@ Tests cover:
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 import pytest
 
@@ -492,7 +491,7 @@ def test_multi_page_unicode_title(tmp_path):
 
 def test_multi_page_navigation_links_present():
     """DEFAULT_NAV_LINKS includes expected pages."""
-    labels = {l["label"] for l in DEFAULT_NAV_LINKS}
+    labels = {link["label"] for link in DEFAULT_NAV_LINKS}
     assert "Home" in labels
     assert "About" in labels
     assert "Contact" in labels
