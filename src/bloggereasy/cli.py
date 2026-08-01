@@ -466,5 +466,54 @@ def serve_cmd(
     uvicorn.run("bloggereasy.api.app:app", host=host, port=port, log_level="info")
 
 
+@app.command("multi-page")
+def multi_page_cmd(
+    output_dir: Path = typer.Option(
+        Path("dist"),
+        "--output-dir",
+        "-o",
+        help="Directory where HTML pages are written.",
+    ),
+    site_name: str = typer.Option("My Site", "--site-name", help="Site name (shown in header)."),
+    tagline: str = typer.Option("", "--tagline", help="Short tagline displayed below the site name."),
+    primary_color: str = typer.Option(
+        "#1a73e8", "--primary-color", help="Primary accent colour (CSS hex)."
+    ),
+    background_color: str = typer.Option(
+        "#ffffff", "--bg-color", help="Page background colour."
+    ),
+    text_color: str = typer.Option(
+        "#222222", "--text-color", help="Body text colour."
+    ),
+    font_family: str = typer.Option(
+        "system-ui, sans-serif", "--font", help="CSS font-family stack."
+    ),
+    no_contact_form: bool = typer.Option(
+        False, "--no-contact-form", help="Hide the contact form on the Contact page."
+    ),
+) -> None:
+    """Generate a multi-page static site: home (index.html), about, contact.
+
+    Writes index.html, about.html, and contact.html into --output-dir
+    with a consistent header, navigation, and footer.
+    """
+    from bloggereasy.multi_page import generate_multi_page_site
+
+    result = generate_multi_page_site(
+        output_dir=output_dir,
+        site_name=site_name,
+        tagline=tagline,
+        primary_color=primary_color,
+        background_color=background_color,
+        text_color=text_color,
+        font_family=font_family,
+        show_contact_form=not no_contact_form,
+    )
+    console.print(f"[green]Multi-page site generated[/green] → {result['output_dir']}")
+    for p in result["pages"]:
+        console.print(f"  • {p}")
+    console.print(f"[dim]{result['total_bytes']} bytes total[/dim]")
+
+
 if __name__ == "__main__":
     app()
