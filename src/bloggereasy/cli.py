@@ -14,6 +14,7 @@ from bloggereasy.integrations.sdk import (
     generate_from_image,
     generate_from_url,
     generate_multi_page,
+    generate_preview_sidecar,
 )
 from bloggereasy.parse.fetch import fetch_html_url
 from bloggereasy.parse.html_page import parse_html_file
@@ -170,11 +171,14 @@ def gen_shortcut(
         "default", "--widgets", help="Sidebar widgets: default, minimal, full."
     ),
     dark: bool = typer.Option(False, "--dark", help="Force dark skin colors."),
+    preview: bool = typer.Option(
+        False, "--preview", help="Generate a responsive preview HTML sidecar alongside the XML."
+    ),
 ) -> None:
     """Generate an XML theme from a bundled sample when no gen subcommand is used."""
     if ctx.invoked_subcommand is not None:
         return
-    if template is None and out is None and widgets == "default" and not dark:
+    if template is None and out is None and widgets == "default" and not dark and not preview:
         console.print(ctx.get_help())
         raise typer.Exit()
 
@@ -198,6 +202,8 @@ def gen_shortcut(
             "import_hint": result["import_hint"],
         }
     )
+    if preview:
+        _emit_preview(result["structure"], out_path)
 
 
 @parse_app.command("html")
@@ -220,6 +226,9 @@ def gen_html(
         "default", "--widgets", help="Sidebar widgets: default, minimal, full."
     ),
     dark: bool = typer.Option(False, "--dark", help="Force dark skin colors."),
+    preview: bool = typer.Option(
+        False, "--preview", help="Generate a responsive preview HTML sidecar alongside the XML."
+    ),
 ) -> None:
     _validate_widgets(widgets)
     if (input is None) == (url is None):
@@ -250,6 +259,8 @@ def gen_html(
             "import_hint": result["import_hint"],
         }
     )
+    if preview:
+        _emit_preview(result["structure"], out_path)
 
 
 @gen_app.command("url")
@@ -261,6 +272,9 @@ def gen_url(
         "default", "--widgets", help="Sidebar widgets: default, minimal, full."
     ),
     dark: bool = typer.Option(False, "--dark", help="Force dark skin colors."),
+    preview: bool = typer.Option(
+        False, "--preview", help="Generate a responsive preview HTML sidecar alongside the XML."
+    ),
 ) -> None:
     out_path = out or (OUT_DIR / "from_url.xml")
     _validate_widgets(widgets)
@@ -280,6 +294,8 @@ def gen_url(
     console.print_json(
         data={"title": result["structure"]["title"], "validation": result["validation"]}
     )
+    if preview:
+        _emit_preview(result["structure"], out_path)
 
 
 @gen_app.command("image")
@@ -292,6 +308,9 @@ def gen_image(
         "default", "--widgets", help="Sidebar widgets: default, minimal, full."
     ),
     dark: bool = typer.Option(False, "--dark", help="Force dark skin colors."),
+    preview: bool = typer.Option(
+        False, "--preview", help="Generate a responsive preview HTML sidecar alongside the XML."
+    ),
 ) -> None:
     out_path = out or (OUT_DIR / f"{sanitize_filename(input.stem)}-image.xml")
     _validate_widgets(widgets)
@@ -306,6 +325,8 @@ def gen_image(
             "validation": result["validation"],
         }
     )
+    if preview:
+        _emit_preview(result["structure"], out_path)
 
 
 @gen_app.command("multi")
@@ -319,6 +340,9 @@ def gen_multi(
         "default", "--widgets", help="Sidebar widgets: default, minimal, full."
     ),
     dark: bool = typer.Option(False, "--dark", help="Force dark skin colors."),
+    preview: bool = typer.Option(
+        False, "--preview", help="Generate responsive preview HTMLs alongside each page XML."
+    ),
 ) -> None:
     """Generate a coordinated multi-page theme set (home + optional about + contact).
 
@@ -360,6 +384,10 @@ def gen_multi(
             "all_valid": result["all_valid"],
         }
     )
+    if preview:
+        for name, page_result in result["pages"].items():
+            xml_path = Path(page_result["output"])
+            _emit_preview(page_result["structure"], xml_path)
     if not result["all_valid"]:
         raise typer.Exit(1)
 
@@ -381,6 +409,16 @@ def _validate_widgets(widgets: str) -> None:
     if widgets not in {"default", "minimal", "full"}:
         console.print("[red]--widgets must be one of: default, minimal, full[/red]")
         raise typer.Exit(1)
+
+
+def _emit_preview(structure: dict, out_path: Path) -> None:
+    """Generate a responsive preview sidecar alongside the XML output."""
+    preview_path = out_path.with_suffix(".preview.html")
+    preview_result = generate_preview_sidecar(structure, preview_path)
+    console.print(
+        f"[green]Preview sidecar[/green] {preview_result['output']} "
+        f"({preview_result['bytes']} bytes, {preview_result['breakpoints']} breakpoints)"
+    )
 
 
 def _sample_for_template(template: str) -> Path:
