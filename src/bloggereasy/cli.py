@@ -130,6 +130,7 @@ def demo_cmd(
         "portfolio.html": "portfolio",
         "news_portal.html": "news",
         "dark_dev.html": "dark",
+        "travel_journal.html": "travel",
     }
     for path in samples:
         out = root / f"{path.stem}.xml"
