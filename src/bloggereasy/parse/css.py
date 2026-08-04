@@ -18,13 +18,13 @@ def extract_css_skin(html: str) -> dict[str, Any]:
 
 
 def _collect_css(html: str) -> str:
-    style_blocks = re.findall(r"<style[^>]*>(.*?)</style>", html, flags=re.I | re.S)
-    inline_styles = re.findall(r"\sstyle=[\"']([^\"']+)[\"']", html, flags=re.I)
+    style_blocks = re.findall(r"<style[^>]*>(.*?)</style>", html, flags=re.IGNORECASE | re.DOTALL)
+    inline_styles = re.findall(r"\sstyle=[\"']([^\"']+)[\"']", html, flags=re.IGNORECASE)
     return "\n".join([*style_blocks, *inline_styles])
 
 
 def _extract_fonts(css: str) -> dict[str, str]:
-    families = re.findall(r"font-family\s*:\s*([^;}{]+)", css, flags=re.I)
+    families = re.findall(r"font-family\s*:\s*([^;}{]+)", css, flags=re.IGNORECASE)
     cleaned: list[str] = []
     for family in families:
         first = family.split(",")[0].strip().strip("'\"")
@@ -68,10 +68,10 @@ def _first_css_value(
         hinted = _first_block(css, rf"[^{{]*(?:{selector_hint})[^{{]*")
         if hinted:
             haystack = hinted
-    match = re.search(rf"{property_name}\s*:\s*([^;}}{{]+)", haystack, flags=re.I)
+    match = re.search(rf"{property_name}\s*:\s*([^;}}{{]+)", haystack, flags=re.IGNORECASE)
     return match.group(1).strip() if match else default
 
 
 def _first_block(css: str, selector_pattern: str) -> str:
-    match = re.search(rf"{selector_pattern}\{{([^}}]+)\}}", css, flags=re.I | re.S)
+    match = re.search(rf"{selector_pattern}\{{([^}}]+)\}}", css, flags=re.IGNORECASE | re.DOTALL)
     return match.group(1) if match else ""

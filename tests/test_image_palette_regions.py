@@ -10,7 +10,7 @@ from bloggereasy.vision.palette import structure_from_image
 def test_structure_from_image_extracts_region_hints(tmp_path: Path) -> None:
     Image = pytest.importorskip("PIL.Image")
     img = Image.new("RGB", (8, 8), "#ffffff")
-    for y in range(0, 2):
+    for y in range(2):
         for x in range(8):
             img.putpixel((x, y), (200, 40, 40))
     for y in range(2, 6):

@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from bloggereasy import __version__
@@ -166,7 +166,7 @@ def generate_bundle(
 
     manifest = {
         "bundle_version": BUNDLE_VERSION,
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "source": source,
         "source_ref": source_ref,
         "template": result.get("template", template),

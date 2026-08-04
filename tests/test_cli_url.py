@@ -5,7 +5,6 @@ from typer.testing import CliRunner
 from bloggereasy import cli
 from bloggereasy.cli import app
 
-
 runner = CliRunner()
 
 
