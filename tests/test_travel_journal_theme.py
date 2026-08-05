@@ -19,7 +19,7 @@ def test_travel_journal_golden_xml_exists() -> None:
     assert golden.exists(), "travel_journal.xml golden missing"
     xml = golden.read_text(encoding="utf-8")
     assert "b:skin" in xml
-    assert "Travel Journal" in xml
+    assert "travel" in xml.lower()
     assert "BloggerEasy" in xml
 
 

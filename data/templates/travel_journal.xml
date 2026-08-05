@@ -1,96 +1,224 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:b="http://www.google.com/2005/gml/b" xmlns:data="http://www.google.com/2005/gml/data" xmlns:expr="http://www.google.com/2005/gml/expr">
+<html b:css='false' b:defaultwidgetversion='2' b:layoutsVersion='3' b:responsive='true'
+  b:templateVersion='1.0.0' expr:class='data:blog.languageDirection'
+  xmlns='http://www.w3.org/1999/xhtml'
+  xmlns:b='http://www.google.com/2005/gml/b'
+  xmlns:data='http://www.google.com/2005/gml/data'
+  xmlns:expr='http://www.google.com/2005/gml/expr'>
 <head>
-  <title><data:blog.title/></title>
-  <b:skin><![CDATA[
-/* Travel Journal - BloggerEasy theme pack */
+  <meta charset='utf-8'/>
+  <meta content='width=device-width, initial-scale=1' name='viewport'/>
+  <meta expr:content='data:blog.metaDescription' name='description'/>
+  <meta expr:content='data:blog.title' property='og:site_name'/>
+  <meta expr:content='data:blog.pageTitle' property='og:title'/>
+  <meta expr:content='data:blog.metaDescription' property='og:description'/>
+  <meta expr:content='data:blog.canonicalUrl' property='og:url'/>
+  <meta content='website' property='og:type'/>
+  <meta content='summary_large_image' name='twitter:card'/>
+  <meta expr:content='data:blog.pageTitle' name='twitter:title'/>
+  <meta expr:content='data:blog.metaDescription' name='twitter:description'/>
+  <title><data:blog.pageTitle/></title>
+  <b:include data='blog' name='all-head-content'/>
+  <b:skin version='1.0.0'><![CDATA[
+/*-----------------------------------------------
+BloggerEasy generated theme
+Template: travel
+-----------------------------------------------*/
 body {
   margin: 0;
-  font-family: Georgia, serif;
-  color: #1c1917;
+  font-family: Georgia;
+  color: #222222;
+  background: #ffffff;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+a { color: #1c1917; }
+img, iframe, video {
+  max-width: 100%;
+  height: auto;
+}
+.header-inner {
+  background: #1c1917;
+  color: #fff;
+  padding: 1.5rem 1rem;
+}
+.header-inner h1, .header-inner a { color: #fff; text-decoration: none; font-family: system-ui; }
+.nav-bar {
   background: #faf7f2;
+  padding: 0.5rem 1rem;
 }
-.hero {
-  height: 42vh;
-  min-height: 260px;
-  background: linear-gradient(180deg, rgba(15,23,42,0.15), rgba(15,23,42,0.55)),
-              linear-gradient(120deg, #0ea5e9, #0369a1 55%, #0f766e);
-  display: flex;
-  align-items: flex-end;
-}
-.hero-inner {
-  max-width: 720px;
+.nav-bar ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 1rem; flex-wrap: wrap; }
+.nav-bar a { color: #fff; text-decoration: none; }
+.content-wrap {
+  max-width: 1100px;
   margin: 0 auto;
   padding: 2rem 1.25rem;
-  color: #fff;
-  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
 }
-.hero h1 { margin: 0; font-size: 2.2rem; font-weight: 600; }
-.hero p { margin: 0.4rem 0 0; opacity: 0.9; }
-article {
-  max-width: 720px;
-  margin: 0 auto;
+.magazine-featured {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+  padding: 0.75rem;
+}
+.post {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
   padding: 2rem 1.25rem 3.5rem;
-  line-height: 1.7;
+  margin-bottom: 1rem;
 }
-article h2 { font-size: 1.25rem; margin-top: 1.75rem; }
-.meta {
-  font-family: system-ui, sans-serif;
-  color: #78716c;
-  font-size: 0.9rem;
-  margin-bottom: 1.5rem;
+.post h3 { font-family: system-ui; margin-top: 0; }
+.post a, .button, button {
+  background: #1a73e8;
+  color: #ffffff;
+  padding: 0.55rem 0.9rem;
+  border-radius: 6px;
 }
-footer {
+.sidebar .widget {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.footer-inner {
+  margin-top: 2rem;
+  padding: 1rem;
   text-align: center;
-  color: #a8a29e;
-  font-family: system-ui, sans-serif;
-  font-size: 0.85rem;
-  padding: 2rem;
+  background: #0f172a;
+  color: #e2e8f0;
+  font-size: 0.9rem;
 }
-a { color: #0369a1; }
-a:hover { color: #0ea5e9; }
-nav a { margin-right: 1rem; color: #57534e; }
-nav a:hover { color: #1c1917; }
-.post { background: #fff; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-  ]]></b:skin>
+.landing-shell {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1rem 0;
+}
+.landing-hero {
+  padding: 3rem 1.5rem;
+  text-align: center;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+.landing-hero h1 {
+  margin: 0 0 0.75rem;
+  color: #222222;
+  font-family: system-ui;
+  font-size: 2.4rem;
+}
+.landing-hero p { max-width: 680px; margin: 0 auto 1.5rem; }
+.landing-cta { display: inline-block; text-decoration: none; }
+.landing-features {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  padding: 2rem 0;
+}
+.landing-card {
+  padding: 2rem 1.25rem 3.5rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+.landing-card h2 { margin-top: 0; font-family: system-ui; }
+@media (max-width: 800px) {
+  .content-wrap { grid-template-columns: 1fr; }
+  .landing-features { grid-template-columns: 1fr; }
+  .landing-hero { padding: 2rem 1rem; }
+  .landing-hero h1 { font-size: 1.9rem; }
+  .header-inner { padding: 1rem; }
+  .header-inner h1 { font-size: 1.65rem; line-height: 1.2; }
+  .nav-bar ul { gap: 0.45rem; }
+  .nav-bar a { display: inline-block; padding: 0.25rem 0; }
+  .post { padding: 0.85rem; }
+  .sidebar .widget { padding: 0.85rem; }
+}
+@media (max-width: 480px) {
+  .content-wrap { padding: 0.5rem; }
+  .nav-bar { padding: 0.45rem 0.65rem; }
+  .nav-bar ul { flex-direction: column; gap: 0.25rem; }
+  .footer-inner { font-size: 0.82rem; }
+}
+]]></b:skin>
 </head>
 <body>
-  <b:section id="header" maxwidgets="1" showaddelement="yes">
-    <b:widget id="Header1" locked="true" title="Travel Journal (Header)" type="Header">
-      <b:includable id="main">
-        <div class="hero">
-          <div class="hero-inner">
-            <h1><data:blog.title/></h1>
-            <p><data:blog.description/></p>
-          </div>
-        </div>
-      </b:includable>
-    </b:widget>
-  </b:section>
-
-  <b:section id="main" maxwidgets="1" showaddelement="no">
-    <b:widget id="Blog1" locked="true" title="Blog Posts" type="Blog">
-      <b:includable id="main" var="top">
-        <article>
-          <b:loop values="data:posts" var="post">
-            <div class="post">
-              <h2><a expr:href="data:post.url"><data:post.title/></a></h2>
-              <p class="meta"><data:post.date/> — <data:post.author/></p>
-              <data:post.body/>
+  <div class='header-outer'>
+    <header class='header-inner'>
+      <b:section class='header' id='header' maxwidgets='1' name='Header' showaddelement='no'>
+        <b:widget id='Header1' locked='true' title='Coastal Escape — Travel Story' type='Header' version='1'>
+          <b:widget-settings>
+            <b:widget-setting name='displayUrl'/>
+            <b:widget-setting name='displayHeight'>0</b:widget-setting>
+            <b:widget-setting name='sectionWidth'>-1</b:widget-setting>
+            <b:widget-setting name='useImage'>false</b:widget-setting>
+            <b:widget-setting name='shrinkToFit'>false</b:widget-setting>
+            <b:widget-setting name='imagePlacement'>BEHIND</b:widget-setting>
+            <b:widget-setting name='displayWidth'>-1</b:widget-setting>
+          </b:widget-settings>
+          <b:includable id='main'>
+            <div id='header-inner'>
+              <h1><b:include name='title'/></h1>
+              <p><data:blog.metaDescription/></p>
             </div>
-          </b:loop>
-        </article>
-      </b:includable>
-    </b:widget>
-  </b:section>
+          </b:includable>
+        </b:widget>
+      </b:section>
+    </header>
+    <nav class='nav-bar'>
+      <ul>
+        <li><a expr:href="data:blog.homepageUrl">Home</a></li><li><a href="#">About</a></li>
+      </ul>
+      
+      <b:section class='nav-widgets' id='navigation' name='Navigation' showaddelement='yes'>
+        <b:widget id='LinkList1' locked='false' title='Navigation' type='LinkList' version='1'>
+          <b:widget-settings>
+            <b:widget-setting name='sorting'>NONE</b:widget-setting>
+            <b:widget-setting name='link-0'>#</b:widget-setting>
+            <b:widget-setting name='link-0.name'>Home</b:widget-setting>
+            <b:widget-setting name='link-1'>#</b:widget-setting>
+            <b:widget-setting name='link-1.name'>About</b:widget-setting>
+          </b:widget-settings>
+          <b:includable id='main'><div class='widget-content'><data:title/></div></b:includable>
+        </b:widget>
+      </b:section>
+    </nav>
+  </div>
 
-  <b:section id="footer" maxwidgets="1" showaddelement="yes">
-    <b:widget id="Footer1" locked="false" title="Footer" type="Text">
-      <b:includable id="main">
-        <footer><data:content/> - Powered by BloggerEasy</footer>
-      </b:includable>
-    </b:widget>
-  </b:section>
+  
+
+  <div class='content-wrap'>
+    
+    <div class='main-outer'>
+      <b:section class='main' id='main' name='Main' showaddelement='yes'>
+        <b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog' version='1'>
+          <b:includable id='main'>
+            <b:loop values='data:posts' var='post'>
+              <article class='post'>
+                <h3><a expr:href='data:post.url'><data:post.title/></a></h3>
+                <div class='post-body'><data:post.body/></div>
+              </article>
+            </b:loop>
+          </b:includable>
+        </b:widget>
+      </b:section>
+    </div>
+    
+  </div>
+
+  <footer class='footer-inner'>
+    <b:section class='footer' id='footer' name='Footer' showaddelement='yes'>
+      <b:widget id='Text1' locked='false' title='Footer' type='Text' version='1'>
+        <b:widget-settings>
+          <b:widget-setting name='content'>Travel journal sample for BloggerEasy · Theme by BloggerEasy</b:widget-setting>
+        </b:widget-settings>
+        <b:includable id='main'><div class='widget-content'><data:content/></div></b:includable>
+      </b:widget>
+    </b:section>
+  </footer>
 </body>
 </html>
