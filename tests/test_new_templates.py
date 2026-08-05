@@ -1,5 +1,3 @@
-import os
-from bloggereasy.theme.builder import build_blogger_xml
 from bloggereasy.theme.presets import PRESETS
 
 def test_new_templates_exist():
