@@ -17,6 +17,7 @@ from bloggereasy.integrations.sdk import (
 from bloggereasy.parse.fetch import fetch_html_url
 from bloggereasy.parse.html_page import parse_html_file
 from bloggereasy.theme.builder import build_blogger_xml, sanitize_filename
+from bloggereasy.theme.multi_page import build_multi_page_set
 from bloggereasy.theme.presets import PRESETS
 from bloggereasy.theme.validate import validate_theme_file
 
@@ -450,6 +451,40 @@ def gui_cmd() -> None:
 
     raise SystemExit(gui_main())
 
+
+
+@app.command("multi-page")
+def multi_page_cmd(
+    input: Path = typer.Option(
+        None, "--input", "-i", exists=True, dir_okay=False,
+        help="HTML file to parse for structure",
+    ),
+    out_dir: Path | None = typer.Option(
+        None, "--out-dir", "-o", help="Output directory for the page set",
+    ),
+    template: str = typer.Option("simple", "--template", "-t"),
+    title: str = typer.Option("My Blog", "--title"),
+) -> None:
+    """Generate a coordinated multi-page set: theme + About + Contact pages."""
+    if input is not None:
+        structure = parse_html_file(input)
+    else:
+        structure = {"title": title, "source": "cli"}
+
+    result = build_multi_page_set(
+        structure,
+        template_name=template,
+        out_dir=out_dir,
+    )
+
+    console.print(f"[green]Multi-page set ready[/green] → {Path(result['files']['theme']).parent}")
+    table = Table(title="Generated files")
+    table.add_column("Page")
+    table.add_column("Path")
+    for name, path in result["files"].items():
+        table.add_row(name, path)
+    console.print(table)
+    console.print(f"[dim]{result['import_hint']}[/dim]")
 
 @app.command("serve")
 def serve_cmd(
