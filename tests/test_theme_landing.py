@@ -9,7 +9,6 @@ from bloggereasy.integrations.sdk import generate_from_html
 from bloggereasy.theme.presets import PRESETS
 from bloggereasy.theme.validate import validate_theme_file
 
-
 ROOT = Path(__file__).resolve().parents[1]
 SAMPLES = ROOT / "data" / "samples" / "html"
 runner = CliRunner()

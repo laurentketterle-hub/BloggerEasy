@@ -23,7 +23,7 @@ def parse_html_string(html: str, source: str = "inline") -> dict:
         title = _text(soup.find("h1"))
 
     description = ""
-    meta = soup.find("meta", attrs={"name": re.compile("^description$", re.I)})
+    meta = soup.find("meta", attrs={"name": re.compile("^description$", re.IGNORECASE)})
     if meta and meta.get("content"):
         description = str(meta["content"]).strip()
 
@@ -103,7 +103,7 @@ def _extract_colors(html: str) -> dict:
 
 
 def _extract_fonts(html: str, soup: BeautifulSoup) -> dict:
-    families = re.findall(r"font-family\s*:\s*([^;}{]+)", html, flags=re.I)
+    families = re.findall(r"font-family\s*:\s*([^;}{]+)", html, flags=re.IGNORECASE)
     cleaned = []
     for fam in families:
         first = fam.split(",")[0].strip().strip("'\"")
