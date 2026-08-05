@@ -20,3 +20,24 @@
 *:focus { outline: 2px solid #06c; outline-offset: 2px; }
 .skip-link { position: absolute; top: -40px; left: 0; background: #06c; color: #fff; padding: 8px; }
 .skip-link:focus { top: 0; }
+
+@media (prefers-color-scheme: dark) {
+    body { background: #1a1a2e; color: #e0e0e0; }
+    nav { border-color: #333; }
+    nav a { color: #6cb4ee; }
+    main section { background: #16213e; }
+    footer { color: #666; }
+    input, textarea { background: #1a1a2e; color: #e0e0e0; border-color: #333; }
+    button { background: #e94560; }
+    button:hover { background: #c73e54; }
+}
+
+@media (max-width: 600px) {
+    body { padding: 10px; }
+    nav { flex-direction: column; gap: 5px; }
+    header h1 { font-size: 1.5em; }
+}
+
+*:focus { outline: 2px solid #06c; outline-offset: 2px; }
+.skip-link { position: absolute; top: -40px; left: 0; background: #06c; color: #fff; padding: 8px; }
+.skip-link:focus { top: 0; }
