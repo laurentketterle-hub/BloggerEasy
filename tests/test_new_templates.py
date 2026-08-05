@@ -1,5 +1,6 @@
 from bloggereasy.theme.presets import PRESETS
 
+
 def test_new_templates_exist():
     """Test that the new templates are defined in PRESETS."""
     expected_templates = {"home", "about", "contact"}
