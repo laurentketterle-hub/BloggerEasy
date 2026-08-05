@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:b="http://www.google.com/2005/gml/b" xmlns:data="http://www.google.com/2005/gml/data" xmlns:expr="http://www.google.com/2005/gml/expr">
+<head>
+  <title><data:blog.title/></title>
+  <b:skin><![CDATA[
+/* Travel Journal - BloggerEasy theme pack */
+body {
+  margin: 0;
+  font-family: Georgia, serif;
+  color: #1c1917;
+  background: #faf7f2;
+}
+.hero {
+  height: 42vh;
+  min-height: 260px;
+  background: linear-gradient(180deg, rgba(15,23,42,0.15), rgba(15,23,42,0.55)),
+              linear-gradient(120deg, #0ea5e9, #0369a1 55%, #0f766e);
+  display: flex;
+  align-items: flex-end;
+}
+.hero-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem;
+  color: #fff;
+  width: 100%;
+}
+.hero h1 { margin: 0; font-size: 2.2rem; font-weight: 600; }
+.hero p { margin: 0.4rem 0 0; opacity: 0.9; }
+article {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3.5rem;
+  line-height: 1.7;
+}
+article h2 { font-size: 1.25rem; margin-top: 1.75rem; }
+.meta {
+  font-family: system-ui, sans-serif;
+  color: #78716c;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+footer {
+  text-align: center;
+  color: #a8a29e;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  padding: 2rem;
+}
+a { color: #0369a1; }
+a:hover { color: #0ea5e9; }
+nav a { margin-right: 1rem; color: #57534e; }
+nav a:hover { color: #1c1917; }
+.post { background: #fff; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  ]]></b:skin>
+</head>
+<body>
+  <b:section id="header" maxwidgets="1" showaddelement="yes">
+    <b:widget id="Header1" locked="true" title="Travel Journal (Header)" type="Header">
+      <b:includable id="main">
+        <div class="hero">
+          <div class="hero-inner">
+            <h1><data:blog.title/></h1>
+            <p><data:blog.description/></p>
+          </div>
+        </div>
+      </b:includable>
+    </b:widget>
+  </b:section>
+
+  <b:section id="main" maxwidgets="1" showaddelement="no">
+    <b:widget id="Blog1" locked="true" title="Blog Posts" type="Blog">
+      <b:includable id="main" var="top">
+        <article>
+          <b:loop values="data:posts" var="post">
+            <div class="post">
+              <h2><a expr:href="data:post.url"><data:post.title/></a></h2>
+              <p class="meta"><data:post.date/> — <data:post.author/></p>
+              <data:post.body/>
+            </div>
+          </b:loop>
+        </article>
+      </b:includable>
+    </b:widget>
+  </b:section>
+
+  <b:section id="footer" maxwidgets="1" showaddelement="yes">
+    <b:widget id="Footer1" locked="false" title="Footer" type="Text">
+      <b:includable id="main">
+        <footer><data:content/> - Powered by BloggerEasy</footer>
+      </b:includable>
+    </b:widget>
+  </b:section>
+</body>
+</html>
