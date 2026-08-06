@@ -5,6 +5,7 @@ from pathlib import Path
 
 from lxml import etree
 
+
 XHTML_NS = "http://www.w3.org/1999/xhtml"
 B_NS = "http://www.google.com/2005/gml/b"
 _EXTERNAL_ASSET_RE = re.compile(

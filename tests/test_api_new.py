@@ -26,7 +26,6 @@ def test_gen_image_endpoint() -> None:
     """POST /gen/image should accept a PNG and return Blogger XML."""
     # Create a minimal PNG in memory
     from io import BytesIO
-
     from PIL import Image
 
     img = Image.new("RGB", (200, 100), color=(80, 120, 200))
@@ -48,7 +47,6 @@ def test_gen_image_endpoint() -> None:
 def test_gen_image_rejects_invalid_template() -> None:
     """POST /gen/image should reject unknown template."""
     from io import BytesIO
-
     from PIL import Image
 
     img = Image.new("RGB", (100, 50), color=(0, 0, 0))

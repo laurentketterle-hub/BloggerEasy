@@ -14,7 +14,7 @@ from bloggereasy.theme.preview import structure_to_preview_html
 
 try:
     from fastapi import FastAPI, File, Form, HTTPException, UploadFile
-    from fastapi.responses import HTMLResponse, PlainTextResponse, Response
+    from fastapi.responses import HTMLResponse, Response, PlainTextResponse
     from pydantic import BaseModel, Field
 except ImportError as exc:  # pragma: no cover
     raise ImportError("Install bloggereasy[api] for FastAPI support") from exc
