@@ -466,5 +466,33 @@ def serve_cmd(
     uvicorn.run("bloggereasy.api.app:app", host=host, port=port, log_level="info")
 
 
+@app.command("site")
+def site_cmd(
+    title: str = typer.Option("My Site", "--title", "-t", help="Site name"),
+    out_dir: Path = typer.Option(None, "--out-dir", "-o", help="Output directory"),
+    template: str = typer.Option("simple", "--template", help="BloggerEasy preset name"),
+    description: str = typer.Option("", "--description", "-d", help="Meta description"),
+) -> None:
+    """Generate a multi-page static site (home, about, contact) with consistent theming."""
+    from bloggereasy.config import OUT_DIR
+    from bloggereasy.theme.multipage import build_multi_page_site
+
+    target = out_dir or (OUT_DIR / "site" / sanitize_filename(title))
+    structure = {
+        "title": title,
+        "description": description or f"{title} — multi-page site built with BloggerEasy",
+        "colors": {"primary": "#1a73e8", "secondary": "#34a853"},
+    }
+    result = build_multi_page_site(structure, target, template=template, site_name=title, description=description)
+    console.print(f"[green]Multi-page site generated[/green] → {target}")
+    table = Table(title="Pages")
+    table.add_column("Page")
+    table.add_column("Path")
+    for p in result["pages"]:
+        table.add_row(p["slug"], p["path"])
+    console.print(table)
+    console.print(f"Open [bold]{target / 'index.html'}[/bold] in your browser.")
+
+
 if __name__ == "__main__":
     app()
