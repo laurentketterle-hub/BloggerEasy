@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from PySide6.QtCore import Qt, QSize, QThread, Signal, QUrl
+from PySide6.QtCore import QSize, Qt, QThread, QUrl, Signal
 from PySide6.QtGui import QDesktopServices, QPixmap
 from PySide6.QtWidgets import (
     QButtonGroup,
@@ -138,7 +138,7 @@ class GenerateWorker(QThread):
             else:
                 raise ValueError(f"Unknown mode {self.mode}")
             self.finished_ok.emit(result)
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             self.failed.emit(str(exc))
 
 
@@ -682,7 +682,7 @@ class MainWindow(QMainWindow):
                 result = generate_from_html(path, out, template=tmpl)
                 ok = result["validation"].get("ok")
                 self.demo_log.append(f"{'✓' if ok else '·'} {path.name} → {out.name} ok={ok}")
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 self.demo_log.append(f"✗ {path.name}: {exc}")
         self.demo_log.append(f"\nDone → {root}")
         self.demo_log.append("Import any XML: Blogger → Theme → Backup/Restore → Upload")
