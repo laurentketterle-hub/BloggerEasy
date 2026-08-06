@@ -1,0 +1,50 @@
+
+import os
+
+# The actual multipage.py content, built line by line
+L = []
+def a(s):
+    L.append(s)
+
+a('"""Multi-page static site generator."""')
+a('from pathlib import Path')
+a('from xml.sax.saxutils import escape as _e')
+a('from datetime import datetime')
+a('from bloggereasy.theme.models import structure_dict')
+a('from bloggereasy.theme.presets import apply_preset')
+a('')
+a('DEFAULT_PAGES = ["home", "about", "contact"]')
+a('')
+a('PAGE_CONTENT = {')
+a('    "home": {')
+a('        "title": "Home",')
+a('        "heading": "Welcome",')
+a('        "content": (')
+a('            "<p>Welcome to your multi-page site built with "')
+a('            "<strong>BloggerEasy</strong>.</p>"')
+a('            "<p>Customize this content to introduce your project.</p>"')
+a('        ),')
+a('    },')
+a('    "about": {')
+a('        "title": "About",')
+a('        "heading": "About Us",')
+a('        "content": (')
+a('            "<p>Learn about our mission and team.</p>"')
+a('            "<p>Replace this placeholder with your own story.</p>"')
+a('        ),')
+a('    },')
+a('    "contact": {')
+a('        "title": "Contact",')
+a('        "heading": "Get in Touch",')
+a('        "content": (')
+a('            "<p>We would love to hear from you.</p>"')
+a('            "<p><strong>Email:</strong> hello@example.com<br>"')
+a('            "<strong>Phone:</strong> +1 (555) 000-0000</p>"')
+a('        ),')
+a('    },')
+a('}')
+a('')
+
+with open('src/bloggereasy/theme/multipage.py', 'w') as f:
+    f.write(chr(10).join(L))
+print('Part 1 done')

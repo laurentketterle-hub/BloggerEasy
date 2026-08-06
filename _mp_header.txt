@@ -1,0 +1,37 @@
+"""Multi-page static site generator."""
+from pathlib import Path
+from xml.sax.saxutils import escape as _e
+from datetime import datetime
+from bloggereasy.theme.models import structure_dict
+from bloggereasy.theme.presets import apply_preset
+
+DEFAULT_PAGES = ["home", "about", "contact"]
+
+PAGE_CONTENT = {
+    "home": {
+        "title": "Home",
+        "heading": "Welcome",
+        "content": (
+            "<p>Welcome to your multi-page site built with "
+            "<strong>BloggerEasy</strong>.</p>"
+            "<p>Customize this content to introduce your project.</p>"
+        ),
+    },
+    "about": {
+        "title": "About",
+        "heading": "About Us",
+        "content": (
+            "<p>Learn about our mission and team.</p>"
+            "<p>Replace this placeholder with your own story.</p>"
+        ),
+    },
+    "contact": {
+        "title": "Contact",
+        "heading": "Get in Touch",
+        "content": (
+            "<p>We would love to hear from you.</p>"
+            "<p><strong>Email:</strong> hello@example.com<br>"
+            "<strong>Phone:</strong> +1 (555) 000-0000</p>"
+        ),
+    },
+}
