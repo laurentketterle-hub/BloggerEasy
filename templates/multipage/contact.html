@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — {{site_title}}</title>
+<style>{{theme_css}}</style>
+</head>
+<body>
+<header>
+  <h1>{{site_title}}</h1>
+  <p>{{site_tagline}}</p>
+</header>
+<nav>
+  <a href="index.html">Home</a>
+  <a href="about.html">About</a>
+  <a href="contact.html" class="active">Contact</a>
+</nav>
+<main class="container">
+  <h2>Get in Touch</h2>
+  <div class="contact-layout">
+    <form class="contact-form">
+      <label>Name<input type="text" name="name" required></label>
+      <label>Email<input type="email" name="email" required></label>
+      <label>Message<textarea name="message" rows="5"></textarea></label>
+      <button type="submit">Send Message</button>
+    </form>
+    <div class="contact-info">
+      <h3>Other Ways to Reach Us</h3>
+      <p>Email: {{contact_email}}</p>
+      <p>Twitter: {{contact_twitter}}</p>
+      <p>GitHub: {{contact_github}}</p>
+    </div>
+  </div>
+</main>
+<footer>
+  <p>&copy; {{year}} {{site_title}}. All rights reserved.</p>
+</footer>
+</body>
+</html>
