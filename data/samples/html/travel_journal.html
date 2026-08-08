@@ -1,39 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Coastal Escape — Travel Story</title>
-  <meta name="description" content="Travel journal sample for BloggerEasy" />
-  <style>
-    body { margin:0; font-family: Georgia, serif; color:#1c1917; background:#faf7f2; }
-    .hero { height:42vh; min-height:260px; background:
-      linear-gradient(180deg,rgba(15,23,42,0.15),rgba(15,23,42,0.55)),
-      linear-gradient(120deg,#0ea5e9,#0369a1 55%,#0f766e); display:flex; align-items:flex-end; }
-    .hero-inner { max-width:720px; margin:0 auto; padding:2rem 1.25rem; color:#fff; width:100%; }
-    .hero h1 { margin:0; font-size:clamp(1.8rem,4vw,2.6rem); font-weight:600; }
-    .hero p { margin:0.4rem 0 0; opacity:0.9; }
-    article { max-width:720px; margin:0 auto; padding:2rem 1.25rem 3.5rem; line-height:1.7; }
-    article h2 { font-size:1.25rem; margin-top:1.75rem; }
-    .meta { font-family: system-ui,sans-serif; color:#78716c; font-size:0.9rem; margin-bottom:1.5rem; }
-    footer { text-align:center; color:#a8a29e; font-family: system-ui,sans-serif; font-size:0.85rem; padding:2rem; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wanderlust Chronicles — Travel Journal</title>
+<style>
+  :root {
+    --primary: #d97742;
+    --bg: #fdf6f0;
+    --text: #3d2c2a;
+    --card-bg: #ffffff;
+    --border: #e8d5c4;
+    --accent: #b45309;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+  }
+  header {
+    background: linear-gradient(135deg, #d97742, #b45309);
+    color: white;
+    padding: 4rem 2rem;
+    text-align: center;
+  }
+  header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+  header p { font-size: 1.2rem; opacity: 0.9; }
+  nav {
+    background: white;
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 2px solid var(--border);
+  }
+  nav a { color: var(--primary); text-decoration: none; margin: 0 1rem; font-weight: 600; }
+  nav a:hover { color: var(--accent); }
+  .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+  .journal-entry {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .journal-entry h2 { color: var(--primary); font-size: 1.6rem; margin-bottom: 0.5rem; }
+  .journal-entry .meta {
+    color: #999;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+  .journal-entry img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin: 1rem 0;
+  }
+  .sidebar {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .sidebar h3 { color: var(--primary); margin-bottom: 0.8rem; }
+  .tag-cloud a {
+    display: inline-block;
+    background: #fdf6f0;
+    color: var(--primary);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    margin: 0.2rem;
+    text-decoration: none;
+    font-size: 0.85rem;
+  }
+  footer {
+    background: #3d2c2a;
+    color: #c4a574;
+    text-align: center;
+    padding: 2rem;
+    margin-top: 3rem;
+  }
+  @media (min-width: 768px) {
+    .layout { display: flex; gap: 2rem; }
+    .main-content { flex: 2; }
+    .sidebar-col { flex: 1; }
+  }
+</style>
 </head>
 <body>
-  <div class="hero"><div class="hero-inner">
-    <h1>Three days on the blue coast</h1>
-    <p>Wind, salt, and a notebook full of sketches</p>
-  </div></div>
-  <article>
-    <p class="meta">Travel · Sample journal · BloggerEasy</p>
-    <p>We arrived at dusk as the fishing boats returned. The harbor smelled of citrus and diesel,
-    and every doorway seemed to open toward the sea.</p>
-    <h2>What to keep in a theme</h2>
-    <p>Long-form travel posts need a clear hero, readable body type, and gentle section breaks.
-    This fixture is meant to convert cleanly into Blogger XML.</p>
-    <h2>Packing notes</h2>
-    <p>Light layers, a spare battery, and patience for golden hour. Leave room in the bag for a shell
-    or two — not for the shelf, for the story.</p>
-  </article>
-  <footer>Demo HTML · BloggerEasy travel_journal</footer>
+<header>
+  <h1>Wanderlust Chronicles</h1>
+  <p>Stories from the road less traveled</p>
+</header>
+<nav>
+  <a href="#">Home</a>
+  <a href="#">Destinations</a>
+  <a href="#">Tips</a>
+  <a href="#">Gallery</a>
+  <a href="#">About</a>
+</nav>
+<div class="container">
+  <div class="layout">
+    <div class="main-content">
+      <article class="journal-entry">
+        <h2>Sunrise Over Angkor Wat</h2>
+        <div class="meta">Published: March 15, 2025 • Siem Reap, Cambodia</div>
+        <p>The ancient stones of Angkor Wat glowed amber in the first light of dawn. Standing before this 12th-century marvel, I felt the weight of centuries pressing against the morning mist. The temple's lotus-shaped towers pierced the sky, their reflections shimmering in the still waters of the moat below.</p>
+        <p>Local monks in saffron robes moved silently between the galleries, their presence adding a spiritual dimension to the architectural grandeur. The bas-reliefs told stories of epic battles and celestial dancers, each carving a testament to the Khmer Empire's artistic mastery.</p>
+      </article>
+      <article class="journal-entry">
+        <h2>Lost in the Streets of Marrakech</h2>
+        <div class="meta">Published: February 28, 2025 • Marrakech, Morocco</div>
+        <p>The medina unfolds like a living maze — narrow alleyways where the scent of spices mingles with the sound of craftsmen hammering copper. Every turn reveals something unexpected: a hidden courtyard garden, a fountain of zellige tiles, a rooftop where storks nest against the Atlas Mountains.</p>
+        <p>At dusk, Jemaa el-Fnaa square transforms. Smoke rises from food stalls, snake charmers play their flutes, and storytellers draw crowds in circles of lamplight. It's chaos organized by centuries of tradition.</p>
+      </article>
+      <article class="journal-entry">
+        <h2>Northern Lights in Tromso</h2>
+        <div class="meta">Published: January 10, 2025 • Tromso, Norway</div>
+        <p>The temperature read minus twenty, but the cold was forgotten the moment the sky ignited. Ribbons of green and violet danced across the Arctic darkness, folding and unfolding like cosmic curtains. The aurora borealis turned a freezing night into the most beautiful show on Earth.</p>
+        <p>We huddled around a campfire, sipping hot chocolate as the lights reflected in the fjord below. A local Sami guide shared stories of how his ancestors interpreted the lights as the spirits of the departed playing football with a walrus skull.</p>
+      </article>
+    </div>
+    <aside class="sidebar-col">
+      <div class="sidebar">
+        <h3>About the Author</h3>
+        <p>Travel writer and photographer exploring the world one story at a time. 47 countries and counting.</p>
+      </div>
+      <div class="sidebar">
+        <h3>Popular Destinations</h3>
+        <div class="tag-cloud">
+          <a href="#">Cambodia</a>
+          <a href="#">Morocco</a>
+          <a href="#">Norway</a>
+          <a href="#">Japan</a>
+          <a href="#">Peru</a>
+          <a href="#">Italy</a>
+          <a href="#">Thailand</a>
+          <a href="#">Iceland</a>
+        </div>
+      </div>
+      <div class="sidebar">
+        <h3>Travel Stats</h3>
+        <p>Countries: 47</p>
+        <p>Continents: 6</p>
+        <p>Posts: 128</p>
+        <p>Photos: 3,421</p>
+      </div>
+    </aside>
+  </div>
+</div>
+<footer>
+  <p>&copy; 2025 Wanderlust Chronicles. Crafted with love for travel.</p>
+</footer>
 </body>
 </html>
