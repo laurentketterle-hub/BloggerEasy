@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://www.google.com/2005/gml/b"
+      xmlns:data="http://www.google.com/2005/gml/data"
+      xmlns:expr="http://www.google.com/2005/gml/expr">
+<head>
+  <b:include data="blog" name="all-head-content"/>
+  <title><data:blog.pageTitle/></title>
+  <b:skin><![CDATA[
+/* Travel Journal — BloggerEasy golden template */
+body {
+  margin: 0;
+  font-family: Georgia, serif;
+  color: #1c1917;
+  background: #faf7f2;
+  line-height: 1.7;
+}
+a { color: #0369a1; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Hero */
+.hero-outer {
+  background: linear-gradient(180deg, rgba(15,23,42,0.15), rgba(15,23,42,0.55)),
+              linear-gradient(120deg, #0ea5e9, #0369a1 55%, #0f766e);
+  min-height: 260px;
+  display: flex;
+  align-items: flex-end;
+}
+.hero-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem;
+  color: #fff;
+  width: 100%;
+}
+.hero-inner h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 600;
+}
+.hero-inner p {
+  margin: 0.4rem 0 0;
+  opacity: 0.9;
+}
+
+/* Header / Nav */
+.header-outer {
+  background: #fff;
+  border-bottom: 1px solid #e7e5e4;
+}
+.header-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.blog-title {
+  font-family: Georgia, serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #0f766e;
+}
+.blog-title a { color: inherit; text-decoration: none; }
+.nav-links { display: flex; gap: 1rem; }
+.nav-links a { color: #78716c; font-family: system-ui, sans-serif; font-size: 0.9rem; }
+
+/* Posts */
+.post-outer {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem;
+}
+.post {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e7e5e4;
+}
+.post-title {
+  font-family: Georgia, serif;
+  font-size: 1.4rem;
+  margin: 0 0 0.5rem;
+  color: #1c1917;
+}
+.post-title a { color: inherit; }
+.post-meta {
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: #a8a29e;
+  margin-bottom: 1rem;
+}
+.post-body {
+  font-size: 1.05rem;
+}
+.post-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+/* Sidebar */
+.sidebar {
+  background: #fff;
+  border: 1px solid #e7e5e4;
+  border-radius: 6px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+.sidebar h2 {
+  font-family: Georgia, serif;
+  font-size: 1.1rem;
+  margin: 0 0 0.75rem;
+  color: #0f766e;
+}
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.sidebar li {
+  padding: 0.35rem 0;
+  border-bottom: 1px dotted #e7e5e4;
+}
+.sidebar li:last-child { border-bottom: none; }
+
+/* Footer */
+.footer-outer {
+  text-align: center;
+  padding: 2rem 1.25rem;
+  background: #f5f0eb;
+  border-top: 1px solid #e7e5e4;
+}
+.footer-outer, .footer-outer a {
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: #a8a29e;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .nav-links { gap: 0.5rem; flex-wrap: wrap; }
+  .post-outer { padding: 1.25rem 1rem; }
+}
+  ]]></b:skin>
+</head>
+<body>
+  <b:section id="hero" showaddelement="yes" maxwidgets="1">
+    <b:widget id="Header1" type="Header" locked="true">
+      <b:includable id="main">
+        <div class="hero-outer">
+          <div class="hero-inner">
+            <h1><data:title/></h1>
+            <p><data:description/></p>
+          </div>
+        </div>
+      </b:includable>
+    </b:widget>
+  </b:section>
+
+  <b:section id="nav" showaddelement="yes" maxwidgets="1">
+    <b:widget id="PageList1" type="PageList" locked="false">
+      <b:includable id="main">
+        <div class="header-outer">
+          <div class="header-inner">
+            <div class="blog-title"><a expr:href="data:blog.homepageUrl"><data:title/></a></div>
+            <div class="nav-links">
+              <b:loop values="data:links" var="link">
+                <a expr:href="data:link.url"><data:link.title/></a>
+              </b:loop>
+            </div>
+          </div>
+        </div>
+      </b:includable>
+    </b:widget>
+  </b:section>
+
+  <div class="post-outer">
+    <b:section id="main" showaddelement="yes">
+      <b:widget id="Blog1" type="Blog" locked="true">
+        <b:includable id="main" var="top">
+          <b:loop values="data:posts" var="post">
+            <div class="post">
+              <h2 class="post-title">
+                <a expr:href="data:post.url"><data:post.title/></a>
+              </h2>
+              <div class="post-meta">
+                <data:post.date/> · <data:post.author/>
+              </div>
+              <div class="post-body"><data:post.body/></div>
+            </div>
+          </b:loop>
+          <b:include name="nextprev"/>
+        </b:includable>
+      </b:widget>
+    </b:section>
+  </div>
+
+  <b:section id="footer" showaddelement="yes" maxwidgets="1">
+    <b:widget id="Attribution1" type="Attribution" locked="false">
+      <b:includable id="main">
+        <div class="footer-outer">
+          <data:blog.pageName/> &copy; <data:blog.timestamp/> &middot;
+          Theme by <a href="https://github.com/mergeos-bounties/BloggerEasy">BloggerEasy</a>
+        </div>
+      </b:includable>
+    </b:widget>
+  </b:section>
+</body>
+</html>
