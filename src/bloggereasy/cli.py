@@ -18,6 +18,7 @@ from bloggereasy.parse.fetch import fetch_html_url
 from bloggereasy.parse.html_page import parse_html_file
 from bloggereasy.theme.builder import build_blogger_xml, sanitize_filename
 from bloggereasy.theme.presets import PRESETS
+from bloggereasy.theme.multipage import MULTIPAGE_PRESETS, SiteConfig, write_multipage
 from bloggereasy.theme.validate import validate_theme_file
 
 app = typer.Typer(
