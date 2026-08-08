@@ -1,25 +1,197 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-theme="dark">
 <head>
-  <title>Dev Notes</title>
-  <meta name="description" content="Dark developer blog" />
-  <style>
-    body { font-family: ui-monospace, Consolas, monospace; background: #0b1220; color: #e2e8f0; }
-    header { background: #1e293b; padding: 1.5rem; border-bottom: 2px solid #38bdf8; }
-    a { color: #38bdf8; }
-    .sidebar { background: #111827; padding: 1rem; }
-    nav a { margin-right: 1rem; color: #7dd3fc; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dev.log — Dark Dev Blog</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg-secondary: #161b22;
+    --bg-card: #1c2333;
+    --border: #30363d;
+    --text: #c9d1d9;
+    --text-muted: #8b949e;
+    --primary: #58a6ff;
+    --accent: #f78166;
+    --green: #3fb950;
+    --code-bg: #1a1e2b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+  header {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 2rem;
+  }
+  header h1 { font-size: 1.8rem; color: var(--primary); }
+  header h1::before { content: '> '; color: var(--accent); }
+  header p { color: var(--text-muted); margin-top: 0.5rem; }
+  nav {
+    display: flex;
+    gap: 1.5rem;
+    padding: 0.75rem 2rem;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+  }
+  nav a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
+  nav a:hover { color: var(--primary); }
+  nav a.active { color: var(--primary); font-weight: 600; }
+  .container { max-width: 860px; margin: 0 auto; padding: 2rem; }
+  .post {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .post h2 { color: var(--primary); font-size: 1.3rem; margin-bottom: 0.5rem; }
+  .post .date {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-bottom: 0.8rem;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+  .post .tags { margin-top: 1rem; }
+  .post .tags span {
+    display: inline-block;
+    background: var(--bg);
+    color: var(--text-muted);
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    margin-right: 0.4rem;
+    border: 1px solid var(--border);
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1rem;
+    overflow-x: auto;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin: 1rem 0;
+  }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.9em; }
+  .sidebar-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  .sidebar-box h3 { color: var(--accent); font-size: 1rem; margin-bottom: 0.8rem; }
+  .sidebar-box ul { list-style: none; }
+  .sidebar-box li { padding: 0.3rem 0; }
+  .sidebar-box li::before { content: '> '; color: var(--text-muted); }
+  .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 0.4rem; }
+  .status-dot.green { background: var(--green); }
+  footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    font-size: 0.85rem;
+  }
+  @media (min-width: 768px) {
+    .layout { display: flex; gap: 2rem; }
+    .main-col { flex: 2.5; }
+    .side-col { flex: 1; }
+  }
+</style>
 </head>
 <body>
-  <header><h1>Dev Notes</h1></header>
-  <nav class="menu"><a href="/">Home</a><a href="/posts">Posts</a><a href="/about">About</a></nav>
-  <div style="display:flex;gap:1rem">
-    <main>
-      <article><h2>Ship small PRs</h2><p>Keep changes reviewable and tested.</p></article>
-    </main>
-    <aside class="sidebar"><h3>Tags</h3><p>python, go, ci</p></aside>
+<header>
+  <h1>dev.log</h1>
+  <p>Code, systems, and the occasional bug story.</p>
+</header>
+<nav>
+  <a href="#" class="active">Posts</a>
+  <a href="#">Projects</a>
+  <a href="#">Snippets</a>
+  <a href="#">About</a>
+</nav>
+<div class="container">
+  <div class="layout">
+    <div class="main-col">
+      <article class="post">
+        <h2>Building a Type-Safe Event Bus in Rust</h2>
+        <div class="date">2025-03-20 • 8 min read</div>
+        <p>Event-driven architectures shine in systems programming, but type safety often takes a back seat. Let's build a compile-time checked event bus using Rust's powerful type system and trait bounds.</p>
+        <pre><code>pub trait Event: Send + Sync + 'static {
+    type Payload: Serialize + DeserializeOwned;
+}
+
+pub struct EventBus {
+    handlers: HashMap&lt;TypeId, Vec&lt;Box&lt;dyn Any&gt;&gt;&gt;,
+}
+
+impl EventBus {
+    pub fn subscribe&lt;E: Event&gt;(&amp;mut self, handler: fn(&amp;E::Payload)) {
+        let id = TypeId::of::&lt;E&gt;();
+        self.handlers
+            .entry(id)
+            .or_default()
+            .push(Box::new(handler));
+    }
+}</code></pre>
+        <div class="tags">
+          <span>rust</span><span>systems</span><span>type-safety</span>
+        </div>
+      </article>
+      <article class="post">
+        <h2>PostgreSQL Query Optimization: A Real-World Case Study</h2>
+        <div class="date">2025-03-15 • 12 min read</div>
+        <p>A seemingly simple dashboard query was taking 45 seconds. Here's how we brought it down to 80ms using partial indexes, materialized views, and a smarter query planner strategy.</p>
+        <div class="tags">
+          <span>postgresql</span><span>performance</span><span>sql</span>
+        </div>
+      </article>
+      <article class="post">
+        <h2>Why We Migrated from Kubernetes to Nomad</h2>
+        <div class="date">2025-03-10 • 6 min read</div>
+        <p>Kubernetes is powerful, but for our team of 5 engineers managing 30 services, the operational overhead wasn't worth it. Nomad gave us simpler scheduling, native non-container workloads, and a fraction of the YAML.</p>
+        <div class="tags">
+          <span>devops</span><span>infrastructure</span><span>kubernetes</span>
+        </div>
+      </article>
+    </div>
+    <aside class="side-col">
+      <div class="sidebar-box">
+        <h3>About</h3>
+        <p>Senior backend engineer. Rust enthusiast. Database nerd. Writing about things I break and fix.</p>
+      </div>
+      <div class="sidebar-box">
+        <h3>Active Projects</h3>
+        <ul>
+          <li><span class="status-dot green"></span>ferrite-db</li>
+          <li><span class="status-dot green"></span>typebus-rs</li>
+          <li>keylord</li>
+          <li>dotconfig</li>
+        </ul>
+      </div>
+      <div class="sidebar-box">
+        <h3>Categories</h3>
+        <ul>
+          <li>Rust (14)</li>
+          <li>Databases (11)</li>
+          <li>DevOps (8)</li>
+          <li>Go (6)</li>
+          <li>Architecture (5)</li>
+        </ul>
+      </div>
+    </aside>
   </div>
-  <footer><p>Built for night owls</p></footer>
+</div>
+<footer>
+  <p>dev.log — Powered by curiosity and too much coffee.</p>
+</footer>
 </body>
 </html>
