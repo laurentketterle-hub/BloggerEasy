@@ -56,11 +56,17 @@ PRESETS: dict[str, dict] = {
         "dense": True,
         "accent": "#b91c1c",
     },
-    "corporate_blue": {
+        "travel_journal": {
         "layout_hint": "two-column",
         "dark": False,
         "dense": False,
-        "accent": "#0055aa",
+        "accent": "#d97742",
+    },
+    "dark_dev": {
+        "layout_hint": "two-column",
+        "dark": True,
+        "dense": False,
+        "accent": "#58a6ff",
     },
 }
 
